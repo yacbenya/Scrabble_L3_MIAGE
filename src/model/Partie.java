@@ -1,5 +1,11 @@
 package model;
 
+import service.InfoMot;
+import service.ResultatValidation;
+import service.ServiceDictionnaire;
+import service.ServiceScore;
+import service.ValidateurCoup;
+
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -27,12 +33,23 @@ public final class Partie {
     private int passesConsecutifs = 0;
     private boolean terminee = false;
 
+    private final boolean modeV2 = true;
+    private final ValidateurCoup validateurV2;
+    private final ServiceScore scoreurV2;
+
     public Partie() {
         this(TOUJOURS_VALIDE);
     }
 
     public Partie(Dictionnaire dictionnaire) {
         this.dictionnaire = (dictionnaire == null) ? TOUJOURS_VALIDE : dictionnaire;
+        ServiceDictionnaire d = mot -> this.dictionnaire.estValide(mot);
+        this.validateurV2 = new ValidateurCoup(d);
+        this.scoreurV2 = new ServiceScore();
+    }
+
+    public Partie(ServiceDictionnaire dictionnaire) {
+        this(dictionnaire == null ? TOUJOURS_VALIDE : dictionnaire::estValide);
     }
 
     public void demarrer(List<String> noms) {
@@ -57,8 +74,9 @@ public final class Partie {
     public boolean estPremierCoup() { return plateau.estVideCentre(); }
     public boolean estTerminee() { return terminee; }
 
-
     public ResultatTour jouerCoup(Coup coup) {
+        if (modeV2) return jouerCoupV2(coup);
+
         if (terminee) throw new IllegalStateException("La partie est terminee.");
         if (coup == null || coup.getPoses() == null || coup.getPoses().isEmpty()) {
             throw new IllegalArgumentException("Aucune tuile posee.");
@@ -86,7 +104,6 @@ public final class Partie {
             throw new IllegalArgumentException("Premier coup: ca doit passer par le centre.");
         }
 
-
         String mot = construireMotPrincipal(poses, dir);
         String nettoye = normaliserMot(mot);
 
@@ -111,12 +128,57 @@ public final class Partie {
         return new ResultatTour(points, List.of(nettoye), msg, terminee);
     }
 
+    private ResultatTour jouerCoupV2(Coup coup) {
+        if (terminee) throw new IllegalStateException("La partie est terminee.");
+
+        ResultatValidation resultatValidation = validateurV2.valider(plateau, coup, estPremierCoup());
+        int points = scoreurV2.calculer(plateau, coup, resultatValidation.mots());
+
+        plateau.appliquerCoup(coup);
+
+        Joueur joueur = getJoueurCourant();
+        joueur.ajouterScore(points);
+        completerChevalet(joueur);
+
+        passesConsecutifs = 0;
+
+        boolean finParChevaletVide = sac.estVide() && joueur.getChevalet().taille() == 0;
+        if (finParChevaletVide) {
+            appliquerFinDePartieChevaletVide(joueur);
+            terminee = true;
+        }
+
+        List<String> mots = resultatValidation.mots().stream().map(InfoMot::texte).toList();
+        String message = finParChevaletVide ? "Fin: un joueur a vide son chevalet et le sac est vide." : "Coup valide.";
+
+        if (!terminee) passerAuJoueurSuivant();
+        return new ResultatTour(points, mots, message, terminee);
+    }
+
     public void passer() {
+        if (modeV2) {
+            passerV2();
+            return;
+        }
+
         if (terminee) return;
 
         passesConsecutifs++;
         int seuil = joueurs.size() * 2;
         if (passesConsecutifs >= seuil) {
+            terminee = true;
+            return;
+        }
+        passerAuJoueurSuivant();
+    }
+
+    private void passerV2() {
+        if (terminee) return;
+
+        passesConsecutifs++;
+        int seuil = joueurs.size() * 2;
+        if (passesConsecutifs >= seuil) {
+            appliquerFinDePartieParPasses();
             terminee = true;
             return;
         }
@@ -132,6 +194,25 @@ public final class Partie {
             Tuile t = sac.piocher();
             if (t == null) break;
             joueur.getChevalet().ajouter(t);
+        }
+    }
+
+    private void appliquerFinDePartieChevaletVide(Joueur gagnantPotentiel) {
+        int sommeRestante = 0;
+
+        for (Joueur j : joueurs) {
+            int reste = j.getChevalet().pointsRestants();
+            j.ajouterScore(-reste);
+            sommeRestante += reste;
+        }
+
+        gagnantPotentiel.ajouterScore(sommeRestante);
+    }
+
+    private void appliquerFinDePartieParPasses() {
+        for (Joueur j : joueurs) {
+            int reste = j.getChevalet().pointsRestants();
+            j.ajouterScore(-reste);
         }
     }
 
@@ -177,13 +258,10 @@ public final class Partie {
     }
 
     private static String normaliserMot(String mot) {
-    String maj = mot.toUpperCase(Locale.ROOT);
-    String sansAccents = Normalizer
-            .normalize(maj, Normalizer.Form.NFD)
-            .replaceAll("\\p{M}+", "");   // <- ICI
-    return sansAccents.replaceAll("[^A-Z]", "");
-}
-
-
-
+        String maj = mot.toUpperCase(Locale.ROOT);
+        String sansAccents = Normalizer
+                .normalize(maj, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}+", "");
+        return sansAccents.replaceAll("[^A-Z]", "");
+    }
 }

@@ -26,7 +26,9 @@ public final class Plateau {
         List<Pose> poses = coup.getPoses();
         for (Pose p : poses) {
             Position pos = p.position();
-            getCase(pos.ligne(), pos.colonne()).poserTuile(p.tuile());
+            Tuile tuile = p.tuile();
+            if (tuile.estJoker()) tuile = new Tuile(p.lettreVisible(), 0);
+            getCase(pos.ligne(), pos.colonne()).poserTuile(tuile);
         }
     }
 
