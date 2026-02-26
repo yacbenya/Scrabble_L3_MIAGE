@@ -1,0 +1,12 @@
+# Dossier de compilation
+build/
+
+# Fichiers compilés Java
+*.class
+
+# Fichiers temporaires
+*.log
+
+# IDE
+.idea/
+.vscode/
