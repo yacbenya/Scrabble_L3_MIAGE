@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2026-02-16" view-index="0" gantt-divider-location="448" resource-divider-location="300" version="3.3.3316" locale="fr_FR">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2026-02-16" view-index="0" gantt-divider-location="433" resource-divider-location="386" version="3.3.3316" locale="fr_FR">
     <description/>
-    <view zooming-state="default:7" id="gantt-chart">
-        <field id="tpd3" name="Nom" width="263" order="0"/>
-        <field id="tpd4" name="Date de début" width="75" order="1"/>
-        <field id="tpd5" name="Date de fin" width="94" order="2"/>
+    <view zooming-state="default:6" id="gantt-chart">
+        <field id="tpd3" name="Nom" width="254" order="0"/>
+        <field id="tpd4" name="Date de début" width="72" order="1"/>
+        <field id="tpd5" name="Date de fin" width="91" order="2"/>
         <field id="tpd15" name="Notes" width="20" order="3"/>
         <option id="filter.completedTasks" value="false"/>
         <option id="filter.dueTodayTasks" value="false"/>
@@ -12,8 +12,8 @@
         <option id="color.recent"><![CDATA[#ff0000]]></option>
     </view>
     <view id="resource-table">
-        <field id="0" name="Nom" width="210" order="0"/>
-        <field id="1" name="Rôle par défaut" width="86" order="1"/>
+        <field id="0" name="Nom" width="245" order="0"/>
+        <field id="1" name="Rôle par défaut" width="122" order="1"/>
     </view>
     <!-- -->
     <calendars>
@@ -102,6 +102,7 @@
         <allocation task-id="24" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="23" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="18" resource-id="0" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="17" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="0" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="3" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="2" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
