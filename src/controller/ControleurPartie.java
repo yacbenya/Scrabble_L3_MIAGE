@@ -1,131 +1,183 @@
 package controller;
 
-import model.*;
+import model.Coup;
+import model.Direction;
+import model.Joueur;
+import model.Partie;
+import model.Pose;
+import model.Position;
+import model.Prime;
+import model.ResultatTour;
+import model.Tuile;
+import service.PartieService;
 import service.ServiceDictionnaire;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class ControleurPartie {
-    private final Partie partie;
-
-    private final Map<Position, Tuile> placementsEnAttente = new LinkedHashMap<>();
-    private final Map<Position, Character> facesJokersEnAttente = new HashMap<>();
-
-    private int indexChevaletSelectionne = -1;
+    private final PartieService partieService;
+    private Partie partie;
 
     public ControleurPartie(ServiceDictionnaire dictionnaire) {
-        this.partie = new Partie(dictionnaire);
+        this.partieService = new PartieService(dictionnaire);
     }
 
-    public void nouvellePartie(List<String> noms) {
-        partie.demarrer(noms);
-        placementsEnAttente.clear();
-        facesJokersEnAttente.clear();
-        indexChevaletSelectionne = -1;
+    public Partie nouvellePartie(List<String> noms) {
+        this.partie = partieService.demarrer(noms);
+        return partie;
     }
 
     public Partie getPartie() {
         return partie;
     }
 
-    public Map<Position, Tuile> getPlacementsEnAttente() {
-        return Collections.unmodifiableMap(placementsEnAttente);
+    public void reinitialiser() {
+        this.partie = null;
     }
 
-    public int getIndexChevaletSelectionne() {
-        return indexChevaletSelectionne;
-    }
-
-    public void selectionnerIndexChevalet(int index) {
-        this.indexChevaletSelectionne = index;
-    }
-
-    public Tuile getTuileChevalet(int index) {
-        Joueur joueur = partie.getJoueurCourant();
-        if (index < 0 || index >= joueur.getChevalet().taille()) return null;
-        return joueur.getChevalet().getTuiles().get(index);
-    }
-
-    public void placerTuileSelectionnee(int ligne, int colonne, Character faceJoker) {
-        if (indexChevaletSelectionne < 0) return;
-
-        Position pos = new Position(ligne, colonne);
-        if (placementsEnAttente.containsKey(pos)) return;
-        if (!partie.getPlateau().getCase(ligne, colonne).estVide()) return;
-
-        Joueur joueur = partie.getJoueurCourant();
-        if (indexChevaletSelectionne >= joueur.getChevalet().taille()) return;
-
-        Tuile tuile = joueur.getChevalet().prendreA(indexChevaletSelectionne);
-        placementsEnAttente.put(pos, tuile);
-
-        if (tuile.estJoker()) {
-            facesJokersEnAttente.put(pos, faceJoker);
+    public ResultatTour jouerCoup(List<PlacementCommande> placements, Direction direction) {
+        Partie partieCourante = exigerPartie();
+        if (placements == null || placements.isEmpty()) {
+            throw new IllegalArgumentException("Aucune tuile posée.");
         }
 
-        indexChevaletSelectionne = -1;
-    }
-
-    public void retirerPlacementEnAttente(int ligne, int colonne) {
-        Position pos = new Position(ligne, colonne);
-        Tuile tuile = placementsEnAttente.remove(pos);
-        facesJokersEnAttente.remove(pos);
-
-        if (tuile != null) {
-            partie.getJoueurCourant().getChevalet().ajouter(tuile);
-        }
-    }
-
-    public void annulerCoup() {
-        Joueur joueur = partie.getJoueurCourant();
-        for (Tuile tuile : placementsEnAttente.values()) joueur.getChevalet().ajouter(tuile);
-
-        placementsEnAttente.clear();
-        facesJokersEnAttente.clear();
-        indexChevaletSelectionne = -1;
-    }
-
-    public ResultatTour validerCoup() {
-        if (placementsEnAttente.isEmpty()) throw new IllegalArgumentException("Aucune tuile posee.");
-
+        Joueur joueur = partieCourante.getJoueurCourant();
         List<Pose> poses = new ArrayList<>();
-        for (var entree : placementsEnAttente.entrySet()) {
-            Position pos = entree.getKey();
-            Tuile tuile = entree.getValue();
-            Character face = tuile.estJoker() ? facesJokersEnAttente.get(pos) : null;
-            poses.add(new Pose(pos, tuile, face));
-        }
-
-        
-        Coup coup = new Coup(poses, Direction.HORIZONTALE); // modifier et detecter la direction
+        List<Tuile> prelevees = new ArrayList<>();
 
         try {
-            ResultatTour resultat = partie.jouerCoup(coup);
-            placementsEnAttente.clear();
-            facesJokersEnAttente.clear();
-            indexChevaletSelectionne = -1;
-            return resultat;
+            for (PlacementCommande placement : placements) {
+                if (placement.tileId() == null || placement.tileId().isBlank()) {
+                    throw new IllegalArgumentException("tileId manquant.");
+                }
+
+                Tuile tuile = joueur.getChevalet().retirerParId(placement.tileId());
+                if (tuile == null) {
+                    throw new IllegalArgumentException("La tuile " + placement.tileId() + " n'existe plus dans le chevalet.");
+                }
+                prelevees.add(tuile);
+                poses.add(new Pose(new Position(placement.ligne(), placement.colonne()), tuile, placement.faceJoker()));
+            }
+
+            return partieService.jouerCoup(partieCourante, new Coup(poses, direction));
         } catch (RuntimeException e) {
-            Joueur joueur = partie.getJoueurCourant();
-            for (Tuile tuile : placementsEnAttente.values()) joueur.getChevalet().ajouter(tuile);
-
-            placementsEnAttente.clear();
-            facesJokersEnAttente.clear();
-            indexChevaletSelectionne = -1;
-
+            for (Tuile tuile : prelevees) {
+                joueur.getChevalet().ajouter(tuile);
+            }
             throw e;
         }
     }
 
     public String passerTour() {
-        annulerCoup();
-        partie.passer();
-        return partie.estTerminee() ? "Fin: trop de passes consecutifs." : "Tour passe.";
+        return partieService.passer(exigerPartie());
     }
 
+    public String echangerTuiles(List<String> idsTuiles) {
+        return partieService.echanger(exigerPartie(), idsTuiles);
+    }
+
+    public Map<String, Object> exporterEtat() {
+        Partie partieCourante = this.partie;
+        Map<String, Object> racine = new LinkedHashMap<>();
+        racine.put("gameStarted", partieCourante != null && !partieCourante.getJoueurs().isEmpty());
+
+        if (partieCourante == null || partieCourante.getJoueurs().isEmpty()) {
+            racine.put("finished", false);
+            racine.put("board", boardVide());
+            racine.put("players", List.of());
+            racine.put("rack", List.of());
+            racine.put("bagCount", 0);
+            racine.put("currentPlayerIndex", -1);
+            racine.put("currentPlayerName", null);
+            racine.put("consecutivePasses", 0);
+            racine.put("lastMessage", "Aucune partie en cours.");
+            racine.put("lastPoints", 0);
+            racine.put("lastWords", List.of());
+            racine.put("canExchange", false);
+            return racine;
+        }
+
+        racine.put("finished", partieCourante.estTerminee());
+        racine.put("currentPlayerIndex", partieCourante.getIndexJoueurCourant());
+        racine.put("currentPlayerName", partieCourante.getJoueurCourant().getNom());
+        racine.put("bagCount", partieCourante.getSac().taille());
+        racine.put("consecutivePasses", partieCourante.getPassesConsecutifs());
+        racine.put("lastMessage", partieCourante.getDernierMessage());
+        racine.put("lastPoints", partieCourante.getDerniersPoints());
+        racine.put("lastWords", partieCourante.getDerniersMots());
+        racine.put("canExchange", partieCourante.getSac().taille() >= 7 && !partieCourante.estTerminee());
+        racine.put("players", serialiserJoueurs(partieCourante));
+        racine.put("rack", serialiserChevalet(partieCourante.getJoueurCourant()));
+        racine.put("board", serialiserPlateau(partieCourante));
+        return racine;
+    }
+
+    private Partie exigerPartie() {
+        if (partie == null || partie.getJoueurs().isEmpty()) {
+            throw new IllegalStateException("Aucune partie en cours.");
+        }
+        return partie;
+    }
+
+    private static List<Object> serialiserJoueurs(Partie partie) {
+        List<Object> joueurs = new ArrayList<>();
+        for (int i = 0; i < partie.getJoueurs().size(); i++) {
+            Joueur joueur = partie.getJoueurs().get(i);
+            Map<String, Object> ligne = new LinkedHashMap<>();
+            ligne.put("name", joueur.getNom());
+            ligne.put("score", joueur.getScore());
+            ligne.put("rackCount", joueur.getChevalet().taille());
+            ligne.put("current", i == partie.getIndexJoueurCourant());
+            joueurs.add(ligne);
+        }
+        return joueurs;
+    }
+
+    private static List<Object> serialiserChevalet(Joueur joueur) {
+        List<Object> rack = new ArrayList<>();
+        for (Tuile tuile : joueur.getChevalet().getTuiles()) {
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("id", tuile.getId());
+            item.put("letter", String.valueOf(tuile.getLettre()));
+            item.put("points", tuile.getPoints());
+            item.put("joker", tuile.estJoker());
+            rack.add(item);
+        }
+        return rack;
+    }
+
+    private static List<Object> boardVide() {
+        Partie temporaire = new Partie();
+        return serialiserPlateau(temporaire);
+    }
+
+    private static List<Object> serialiserPlateau(Partie partie) {
+        List<Object> lignes = new ArrayList<>();
+        for (int ligne = 0; ligne < 15; ligne++) {
+            List<Object> colonnes = new ArrayList<>();
+            for (int colonne = 0; colonne < 15; colonne++) {
+                Map<String, Object> cellule = new LinkedHashMap<>();
+                cellule.put("row", ligne);
+                cellule.put("col", colonne);
+                Prime prime = partie.getPlateau().getCase(ligne, colonne).getPrime();
+                cellule.put("prime", prime.name());
+                Tuile tuile = partie.getPlateau().getCase(ligne, colonne).getTuile();
+                if (tuile == null) {
+                    cellule.put("tile", null);
+                } else {
+                    Map<String, Object> infoTuile = new LinkedHashMap<>();
+                    infoTuile.put("letter", String.valueOf(tuile.getLettre()));
+                    infoTuile.put("points", tuile.getPoints());
+                    infoTuile.put("joker", tuile.estJoker());
+                    cellule.put("tile", infoTuile);
+                }
+                colonnes.add(cellule);
+            }
+            lignes.add(colonnes);
+        }
+        return lignes;
+    }
 }
