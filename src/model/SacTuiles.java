@@ -5,14 +5,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
+import java.util.Random;
 
 public final class SacTuiles {
     private final Deque<Tuile> pile = new ArrayDeque<>();
+    private final Random random = new Random();
 
     public SacTuiles() {
         List<Tuile> toutes = new ArrayList<>();
 
-        // Distribution FR classique (simplifiee mais correcte)
         ajouter(toutes, 'A', 1, 9);
         ajouter(toutes, 'B', 3, 2);
         ajouter(toutes, 'C', 3, 2);
@@ -41,15 +42,44 @@ public final class SacTuiles {
         ajouter(toutes, 'Z', 10, 1);
         ajouter(toutes, '?', 0, 2);
 
-        Collections.shuffle(toutes);
-        for (Tuile t : toutes) pile.addLast(t);
+        Collections.shuffle(toutes, random);
+        for (Tuile tuile : toutes) pile.addLast(tuile);
     }
 
     private static void ajouter(List<Tuile> liste, char lettre, int points, int quantite) {
-        for (int i = 0; i < quantite; i++) liste.add(new Tuile(lettre, points));
+        for (int i = 0; i < quantite; i++) {
+            liste.add(new Tuile(lettre, points));
+        }
     }
 
-    public Tuile piocher() { return pile.pollFirst(); }
-    public boolean estVide() { return pile.isEmpty(); }
-    public int taille() { return pile.size(); }
+    public Tuile piocher() {
+        return pile.pollFirst();
+    }
+
+    public List<Tuile> piocher(int quantite) {
+        List<Tuile> resultat = new ArrayList<>();
+        for (int i = 0; i < quantite; i++) {
+            Tuile tuile = piocher();
+            if (tuile == null) break;
+            resultat.add(tuile);
+        }
+        return resultat;
+    }
+
+    public void remettre(List<Tuile> tuiles) {
+        if (tuiles == null || tuiles.isEmpty()) return;
+        List<Tuile> contenu = new ArrayList<>(pile);
+        contenu.addAll(tuiles);
+        Collections.shuffle(contenu, random);
+        pile.clear();
+        pile.addAll(contenu);
+    }
+
+    public boolean estVide() {
+        return pile.isEmpty();
+    }
+
+    public int taille() {
+        return pile.size();
+    }
 }

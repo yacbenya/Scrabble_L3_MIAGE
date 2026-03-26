@@ -7,9 +7,9 @@ public final class Plateau {
     private final CasePlateau[][] cases = new CasePlateau[TAILLE][TAILLE];
 
     public Plateau() {
-        for (int l = 0; l < TAILLE; l++) {
-            for (int c = 0; c < TAILLE; c++) {
-                cases[l][c] = new CasePlateau(l, c, DispositionPlateau.primeA(l, c));
+        for (int ligne = 0; ligne < TAILLE; ligne++) {
+            for (int colonne = 0; colonne < TAILLE; colonne++) {
+                cases[ligne][colonne] = new CasePlateau(ligne, colonne, DispositionPlateau.primeA(ligne, colonne));
             }
         }
     }
@@ -24,11 +24,13 @@ public final class Plateau {
 
     public void appliquerCoup(Coup coup) {
         List<Pose> poses = coup.getPoses();
-        for (Pose p : poses) {
-            Position pos = p.position();
-            Tuile tuile = p.tuile();
-            if (tuile.estJoker()) tuile = new Tuile(p.lettreVisible(), 0);
-            getCase(pos.ligne(), pos.colonne()).poserTuile(tuile);
+        for (Pose pose : poses) {
+            Position position = pose.position();
+            Tuile tuile = pose.tuile();
+            if (tuile.estJoker()) {
+                tuile = new Tuile(pose.lettreVisible(), 0);
+            }
+            getCase(position.ligne(), position.colonne()).poserTuile(tuile);
         }
     }
 

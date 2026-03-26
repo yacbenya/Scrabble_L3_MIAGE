@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2026-02-16" view-index="0" gantt-divider-location="433" resource-divider-location="386" version="3.3.3316" locale="fr_FR">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2026-02-23" view-index="0" gantt-divider-location="418" resource-divider-location="386" version="3.3.3316" locale="fr_FR">
     <description/>
     <view zooming-state="default:6" id="gantt-chart">
-        <field id="tpd3" name="Nom" width="254" order="0"/>
-        <field id="tpd4" name="Date de début" width="72" order="1"/>
-        <field id="tpd5" name="Date de fin" width="91" order="2"/>
+        <field id="tpd3" name="Nom" width="245" order="0"/>
+        <field id="tpd4" name="Date de début" width="69" order="1"/>
+        <field id="tpd5" name="Date de fin" width="88" order="2"/>
         <field id="tpd15" name="Notes" width="20" order="3"/>
         <option id="filter.completedTasks" value="false"/>
         <option id="filter.dueTodayTasks" value="false"/>
@@ -12,8 +12,8 @@
         <option id="color.recent"><![CDATA[#ff0000]]></option>
     </view>
     <view id="resource-table">
-        <field id="0" name="Nom" width="245" order="0"/>
-        <field id="1" name="Rôle par défaut" width="122" order="1"/>
+        <field id="0" name="Nom" width="252" order="0"/>
+        <field id="1" name="Rôle par défaut" width="130" order="1"/>
     </view>
     <!-- -->
     <calendars>
@@ -49,7 +49,7 @@
             <task id="9" uid="643465508485415890765054b4beb488" name="Diagramme de classe V1" meeting="false" start="2026-02-07" duration="1" complete="0" expand="true"/>
         </task>
         <task id="10" uid="7d36a35c2b0e4eac87320a77e89ab888" name="Maquette attendue" meeting="false" start="2026-02-07" duration="1" complete="0" expand="true"/>
-        <task id="11" uid="947b3ed5e6974ff48c8e277865f766ea" name="PROGRAMMATION" meeting="false" start="2026-02-08" duration="96" complete="91" expand="true">
+        <task id="11" uid="947b3ed5e6974ff48c8e277865f766ea" name="PROGRAMMATION" meeting="false" start="2026-02-08" duration="96" complete="98" expand="true">
             <depend id="13" type="2" difference="0" hardness="Strong"/>
             <task id="12" uid="8a8e1c93c5ec40c79bd1624fc921ee80" name="Implémentation du modèle" meeting="false" start="2026-02-08" duration="32" complete="100" expand="true">
                 <task id="22" uid="7c459afa560244c6bb65627138057826" name="implémetation classe CasePlateau" meeting="false" start="2026-02-08" duration="18" complete="100" expand="true"/>
@@ -73,10 +73,12 @@
                 <task id="41" uid="0e83510781754738b2220eb920294965" name="implémentation classe resultatValidation" meeting="false" start="2026-02-25" duration="15" complete="100" expand="true"/>
                 <task id="42" uid="0d26b304baa647239fb4237fe1a3ec3d" name="implémentation classe ServiceDictionnaire" meeting="false" start="2026-02-25" duration="15" complete="100" expand="true"/>
             </task>
-            <task id="18" uid="5bf5a998fb774dad8ea2dd6c1651d548" name="implémentation du controleur" meeting="false" start="2026-03-12" duration="34" complete="65" expand="true">
-                <task id="43" uid="8b2c9a6277894b58b6ecd8d021641b66" name="implémentation de la classe controleur" meeting="false" start="2026-03-12" duration="34" complete="65" expand="true"/>
+            <task id="18" uid="5bf5a998fb774dad8ea2dd6c1651d548" name="implémentation du controleur" meeting="false" start="2026-03-12" duration="34" complete="100" expand="true">
+                <task id="43" uid="8b2c9a6277894b58b6ecd8d021641b66" name="implémentation de la classe controleur" meeting="false" start="2026-03-12" duration="34" complete="100" expand="true"/>
             </task>
-            <task id="17" uid="a2d70e25c29f4a15a52b6e0cb9beed9d" name="implémentation de la vue" meeting="false" start="2026-04-15" duration="30" complete="20" expand="true"/>
+            <task id="17" uid="a2d70e25c29f4a15a52b6e0cb9beed9d" name="implémentation de la vue" meeting="false" start="2026-04-15" duration="30" complete="85" expand="true">
+                <notes><![CDATA[8]]></notes>
+            </task>
         </task>
         <task id="13" uid="92667d7b454442caaa36e03e5d6506ab" name="Finition" meeting="false" start="2026-05-15" duration="6" complete="0" expand="true">
             <task id="14" uid="6eae4e3566b84f91906e15368e409c2a" name="Préparation oral et création support" meeting="false" start="2026-05-15" duration="6" complete="0" expand="true"/>
