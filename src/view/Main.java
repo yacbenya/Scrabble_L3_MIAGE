@@ -1,26 +1,14 @@
 package view;
-import controller.ControleurPartie;
-import model.Partie;
-import java.util.*;
-import service.ServiceDictionnaireMemoire;
 
-public class Main{
-	public static void main(String[] args){
-		System.out.println("lancer");
-		
-		ArrayList<String> list = new ArrayList();
-		list.add("a");
-		list.add("b");
-		
-		Partie p = new Partie();
-		
-		Set<String> mots = new HashSet<>();
-		mots.add("test");
-		ServiceDictionnaireMemoire dictionnaire = new ServiceDictionnaireMemoire(mots);
-		
-		ControleurPartie cp = new ControleurPartie(dictionnaire);
-		
-		cp.nouvellePartie(list);
-		
-	}
+import api.ScrabbleHttpServer;
+
+public final class Main {
+    private Main() { }
+
+    public static void main(String[] args) throws Exception {
+        int port = 8080;
+        ScrabbleHttpServer server = new ScrabbleHttpServer(port);
+        server.start();
+        System.out.println("Backend Scrabble v3 lancé sur http://localhost:" + port);
+    }
 }
