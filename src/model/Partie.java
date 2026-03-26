@@ -1,267 +1,102 @@
 package model;
 
-import service.InfoMot;
-import service.ResultatValidation;
-import service.ServiceDictionnaire;
-import service.ServiceScore;
-import service.ValidateurCoup;
-
-import java.text.Normalizer;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
 public final class Partie {
-
-    @FunctionalInterface
-    public interface Dictionnaire {
-        boolean estValide(String mot);
-    }
-
-    private static final Dictionnaire TOUJOURS_VALIDE = mot -> true;
-
     private final Plateau plateau = new Plateau();
     private final SacTuiles sac = new SacTuiles();
     private final List<Joueur> joueurs = new ArrayList<>();
 
-    private final Dictionnaire dictionnaire;
+    private int indexJoueurCourant;
+    private int passesConsecutifs;
+    private boolean terminee;
+    private String dernierMessage = "";
+    private int derniersPoints;
+    private List<String> derniersMots = List.of();
 
-    private int indexJoueurCourant = 0;
-    private int passesConsecutifs = 0;
-    private boolean terminee = false;
-
-    private final boolean modeV2 = true;
-    private final ValidateurCoup validateurV2;
-    private final ServiceScore scoreurV2;
-
-    public Partie() {
-        this(TOUJOURS_VALIDE);
+    public Plateau getPlateau() {
+        return plateau;
     }
 
-    public Partie(Dictionnaire dictionnaire) {
-        this.dictionnaire = (dictionnaire == null) ? TOUJOURS_VALIDE : dictionnaire;
-        ServiceDictionnaire d = mot -> this.dictionnaire.estValide(mot);
-        this.validateurV2 = new ValidateurCoup(d);
-        this.scoreurV2 = new ServiceScore();
+    public SacTuiles getSac() {
+        return sac;
     }
 
-    public Partie(ServiceDictionnaire dictionnaire) {
-        this(dictionnaire == null ? TOUJOURS_VALIDE : dictionnaire::estValide);
+    public List<Joueur> getJoueurs() {
+        return Collections.unmodifiableList(joueurs);
     }
 
-    public void demarrer(List<String> noms) {
+    public void reinitialiserJoueurs(List<Joueur> nouveauxJoueurs) {
         joueurs.clear();
-        for (String nom : noms) joueurs.add(new Joueur(nom));
-
-        if (joueurs.size() < 2 || joueurs.size() > 4) {
-            throw new IllegalArgumentException("Il faut entre 2 et 4 joueurs.");
-        }
-
-        for (Joueur j : joueurs) completerChevalet(j);
-
+        joueurs.addAll(nouveauxJoueurs);
         indexJoueurCourant = 0;
         passesConsecutifs = 0;
         terminee = false;
+        dernierMessage = "Partie initialisée.";
+        derniersPoints = 0;
+        derniersMots = List.of();
     }
 
-    public Plateau getPlateau() { return plateau; }
-    public List<Joueur> getJoueurs() { return joueurs; }
-    public Joueur getJoueurCourant() { return joueurs.get(indexJoueurCourant); }
-
-    public boolean estPremierCoup() { return plateau.estVideCentre(); }
-    public boolean estTerminee() { return terminee; }
-
-    public ResultatTour jouerCoup(Coup coup) {
-        if (modeV2) return jouerCoupV2(coup);
-
-        if (terminee) throw new IllegalStateException("La partie est terminee.");
-        if (coup == null || coup.getPoses() == null || coup.getPoses().isEmpty()) {
-            throw new IllegalArgumentException("Aucune tuile posee.");
+    public Joueur getJoueurCourant() {
+        if (joueurs.isEmpty()) {
+            throw new IllegalStateException("La partie n'a pas de joueurs.");
         }
-
-        List<Pose> poses = coup.getPoses();
-
-        Set<Position> uniques = new HashSet<>();
-        for (Pose p : poses) {
-            Position pos = p.position();
-            if (!plateau.dansBornes(pos.ligne(), pos.colonne())) throw new IllegalArgumentException("Hors plateau.");
-            if (!plateau.getCase(pos.ligne(), pos.colonne()).estVide()) throw new IllegalArgumentException("Case deja occupee.");
-            if (!uniques.add(pos)) throw new IllegalArgumentException("Deux tuiles sur la meme case.");
-
-            if (p.tuile().estJoker()) {
-                Character face = p.faceJoker();
-                if (face == null || !Character.isLetter(face)) throw new IllegalArgumentException("Joker: choisis une lettre A-Z.");
-            }
-        }
-
-        Direction dir = (coup.getDirection() != null) ? coup.getDirection() : devinerDirection(poses);
-        if (!posesAlignees(poses, dir)) throw new IllegalArgumentException("Les tuiles doivent etre alignees.");
-
-        if (estPremierCoup() && uniques.stream().noneMatch(p -> p.ligne() == 7 && p.colonne() == 7)) {
-            throw new IllegalArgumentException("Premier coup: ca doit passer par le centre.");
-        }
-
-        String mot = construireMotPrincipal(poses, dir);
-        String nettoye = normaliserMot(mot);
-
-        if (nettoye.length() < 2) throw new IllegalArgumentException("Mot trop court.");
-        if (!dictionnaire.estValide(nettoye)) throw new IllegalArgumentException("Mot invalide: " + nettoye);
-
-        int points = calculerPoints(poses);
-
-        plateau.appliquerCoup(new Coup(poses, dir));
-
-        Joueur joueur = getJoueurCourant();
-        joueur.ajouterScore(points);
-        completerChevalet(joueur);
-
-        passesConsecutifs = 0;
-
-        if (sac.estVide() && joueur.getChevalet().taille() == 0) terminee = true;
-
-        String msg = terminee ? "Fin (0.8): sac vide et chevalet vide." : "Coup accepte (0.8).";
-        if (!terminee) passerAuJoueurSuivant();
-
-        return new ResultatTour(points, List.of(nettoye), msg, terminee);
+        return joueurs.get(indexJoueurCourant);
     }
 
-    private ResultatTour jouerCoupV2(Coup coup) {
-        if (terminee) throw new IllegalStateException("La partie est terminee.");
-
-        ResultatValidation resultatValidation = validateurV2.valider(plateau, coup, estPremierCoup());
-        int points = scoreurV2.calculer(plateau, coup, resultatValidation.mots());
-
-        plateau.appliquerCoup(coup);
-
-        Joueur joueur = getJoueurCourant();
-        joueur.ajouterScore(points);
-        completerChevalet(joueur);
-
-        passesConsecutifs = 0;
-
-        boolean finParChevaletVide = sac.estVide() && joueur.getChevalet().taille() == 0;
-        if (finParChevaletVide) {
-            appliquerFinDePartieChevaletVide(joueur);
-            terminee = true;
-        }
-
-        List<String> mots = resultatValidation.mots().stream().map(InfoMot::texte).toList();
-        String message = finParChevaletVide ? "Fin: un joueur a vide son chevalet et le sac est vide." : "Coup valide.";
-
-        if (!terminee) passerAuJoueurSuivant();
-        return new ResultatTour(points, mots, message, terminee);
+    public int getIndexJoueurCourant() {
+        return indexJoueurCourant;
     }
 
-    public void passer() {
-        if (modeV2) {
-            passerV2();
-            return;
-        }
-
-        if (terminee) return;
-
-        passesConsecutifs++;
-        int seuil = joueurs.size() * 2;
-        if (passesConsecutifs >= seuil) {
-            terminee = true;
-            return;
-        }
-        passerAuJoueurSuivant();
-    }
-
-    private void passerV2() {
-        if (terminee) return;
-
-        passesConsecutifs++;
-        int seuil = joueurs.size() * 2;
-        if (passesConsecutifs >= seuil) {
-            appliquerFinDePartieParPasses();
-            terminee = true;
-            return;
-        }
-        passerAuJoueurSuivant();
-    }
-
-    private void passerAuJoueurSuivant() {
-        indexJoueurCourant = (indexJoueurCourant + 1) % joueurs.size();
-    }
-
-    private void completerChevalet(Joueur joueur) {
-        while (joueur.getChevalet().taille() < 7 && !sac.estVide()) {
-            Tuile t = sac.piocher();
-            if (t == null) break;
-            joueur.getChevalet().ajouter(t);
+    public void passerAuJoueurSuivant() {
+        if (!joueurs.isEmpty()) {
+            indexJoueurCourant = (indexJoueurCourant + 1) % joueurs.size();
         }
     }
 
-    private void appliquerFinDePartieChevaletVide(Joueur gagnantPotentiel) {
-        int sommeRestante = 0;
-
-        for (Joueur j : joueurs) {
-            int reste = j.getChevalet().pointsRestants();
-            j.ajouterScore(-reste);
-            sommeRestante += reste;
-        }
-
-        gagnantPotentiel.ajouterScore(sommeRestante);
+    public boolean estPremierCoup() {
+        return plateau.estVideCentre();
     }
 
-    private void appliquerFinDePartieParPasses() {
-        for (Joueur j : joueurs) {
-            int reste = j.getChevalet().pointsRestants();
-            j.ajouterScore(-reste);
-        }
+    public int getPassesConsecutifs() {
+        return passesConsecutifs;
     }
 
-    private static Direction devinerDirection(List<Pose> poses) {
-        if (poses.size() < 2) return Direction.HORIZONTALE;
-
-        long nbLignes = poses.stream().map(p -> p.position().ligne()).distinct().count();
-        long nbCols = poses.stream().map(p -> p.position().colonne()).distinct().count();
-
-        if (nbLignes == 1 && nbCols > 1) return Direction.HORIZONTALE;
-        if (nbCols == 1 && nbLignes > 1) return Direction.VERTICALE;
-
-        throw new IllegalArgumentException("Les tuiles doivent etre sur une meme ligne ou colonne.");
+    public void setPassesConsecutifs(int passesConsecutifs) {
+        this.passesConsecutifs = passesConsecutifs;
     }
 
-    private static boolean posesAlignees(List<Pose> poses, Direction d) {
-        if (d == Direction.HORIZONTALE) {
-            int l = poses.get(0).position().ligne();
-            return poses.stream().allMatch(p -> p.position().ligne() == l);
-        } else {
-            int c = poses.get(0).position().colonne();
-            return poses.stream().allMatch(p -> p.position().colonne() == c);
-        }
+    public boolean estTerminee() {
+        return terminee;
     }
 
-    private static String construireMotPrincipal(List<Pose> poses, Direction d) {
-        List<Pose> copie = new ArrayList<>(poses);
-
-        copie.sort(Comparator.comparingInt(p ->
-                (d == Direction.HORIZONTALE) ? p.position().colonne() : p.position().ligne()
-        ));
-
-        StringBuilder sb = new StringBuilder();
-        for (Pose p : copie) sb.append(p.lettreVisible());
-        return sb.toString();
+    public void setTerminee(boolean terminee) {
+        this.terminee = terminee;
     }
 
-    private static int calculerPoints(List<Pose> poses) {
-        int total = 0;
-        for (Pose p : poses) total += p.pointsLettre();
-        if (poses.size() == 7) total += 50;
-        return total;
+    public String getDernierMessage() {
+        return dernierMessage;
     }
 
-    private static String normaliserMot(String mot) {
-        String maj = mot.toUpperCase(Locale.ROOT);
-        String sansAccents = Normalizer
-                .normalize(maj, Normalizer.Form.NFD)
-                .replaceAll("\\p{M}+", "");
-        return sansAccents.replaceAll("[^A-Z]", "");
+    public void setDernierMessage(String dernierMessage) {
+        this.dernierMessage = dernierMessage == null ? "" : dernierMessage;
+    }
+
+    public int getDerniersPoints() {
+        return derniersPoints;
+    }
+
+    public void setDerniersPoints(int derniersPoints) {
+        this.derniersPoints = derniersPoints;
+    }
+
+    public List<String> getDerniersMots() {
+        return derniersMots;
+    }
+
+    public void setDerniersMots(List<String> derniersMots) {
+        this.derniersMots = derniersMots == null ? List.of() : List.copyOf(derniersMots);
     }
 }

@@ -65,7 +65,6 @@ final class DispositionPlateau {
         if (LETTRE_TRIPLE.contains(k)) return Prime.LETTRE_TRIPLE;
         if (LETTRE_DOUBLE.contains(k)) return Prime.LETTRE_DOUBLE;
 
-        if (ligne == 7 && colonne == 7) return Prime.DEPART;
         return Prime.AUCUNE;
     }
 }
