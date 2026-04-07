@@ -22,6 +22,7 @@ function App() {
   const [setupNames, setSetupNames] = useState(EMPTY_SETUP);
   const [exchangeMode, setExchangeMode] = useState(false);
   const [selectedExchangeIds, setSelectedExchangeIds] = useState([]);
+  const [turnTransition, setTurnTransition] = useState(false);
 
   useEffect(() => {
     void loadState();
@@ -82,6 +83,12 @@ function App() {
     setDirection('HORIZONTALE');
     setExchangeMode(false);
     setSelectedExchangeIds([]);
+  }
+
+  function applyTurnTransition(newState) {
+    if (newState?.gameStarted && !newState?.finished) {
+      setTurnTransition(true);
+    }
   }
 
   const rack = gameState?.rack || [];
@@ -193,6 +200,7 @@ function App() {
       resetLocalTurnState();
       setGameState(state);
       syncSetupNamesFromState(state);
+      applyTurnTransition(state);
     } catch (err) {
       setError(err?.message || 'Erreur lors de la validation du coup');
     }
@@ -205,6 +213,7 @@ function App() {
       resetLocalTurnState();
       setGameState(state);
       syncSetupNamesFromState(state);
+      applyTurnTransition(state);
     } catch (err) {
       setError(err?.message || 'Erreur lors du passage du tour');
     }
@@ -217,6 +226,7 @@ function App() {
       resetLocalTurnState();
       setGameState(state);
       syncSetupNamesFromState(state);
+      applyTurnTransition(state);
     } catch (err) {
       setError(err?.message || "Erreur lors de l'échange des tuiles");
     }
@@ -264,8 +274,8 @@ function App() {
     <div className="page-shell">
       <header className="top-banner">
         <div>
-          <p className="eyebrow">Scrabble v3</p>
-          <h1>React brutalism premium, moteur Java pur</h1>
+          <p className="eyebrow">Scrabble v4</p>
+          <h1>Partie jouable, toutes les règles appliquées</h1>
         </div>
         <div className="top-badges">
           <span className="badge">Sac {gameState?.bagCount ?? 0}</span>
@@ -276,6 +286,22 @@ function App() {
 
       {error ? <div className="alert error">{error}</div> : null}
 
+      {turnTransition && gameState?.gameStarted && !gameState?.finished ? (
+        <TurnTransitionScreen
+          playerName={gameState.currentPlayerName}
+          onReveal={() => setTurnTransition(false)}
+        />
+      ) : null}
+
+      {gameState?.finished ? (
+        <GameOverScreen
+          players={gameState.players || []}
+          winner={gameState.winner}
+          history={gameState.history || []}
+          onNewGame={handleResetGame}
+        />
+      ) : null}
+
       {!gameState?.gameStarted ? (
         <SetupScreen
           setupNames={setupNames}
@@ -284,7 +310,7 @@ function App() {
           onAddPlayer={addPlayerField}
           onRemovePlayer={removePlayerField}
         />
-      ) : (
+      ) : !turnTransition && !gameState?.finished ? (
         <main className="game-layout">
           <aside className="sidebar brutal-card">
             <section>
@@ -324,6 +350,20 @@ function App() {
                 ) : null}
               </div>
             </section>
+
+            {gameState.history?.length ? (
+              <section>
+                <p className="section-label">Historique</p>
+                <div className="history-list">
+                  {gameState.history.slice().reverse().map((entry, i) => (
+                    <div key={i} className={`history-entry history-type-${entry.type.toLowerCase()}`}>
+                      <span className="history-entry-message">{entry.message}</span>
+                      {entry.points > 0 ? <span className="history-entry-points">+{entry.points}</span> : null}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : null}
 
             <section className="action-stack">
               <div className="direction-switch">
@@ -419,14 +459,14 @@ function App() {
             </div>
           </section>
         </main>
-      )}
+      ) : null}
 
-      {gameState?.gameStarted ? (
+      {gameState?.gameStarted && !turnTransition && !gameState?.finished ? (
         <section className="rack-panel brutal-card" onDragOver={(event) => event.preventDefault()}>
           <div className="rack-header">
             <div>
               <p className="section-label">Chevalet</p>
-              <h3>Clic ou drag & drop</h3>
+              <h3>Clic ou drag &amp; drop</h3>
             </div>
             {placements.length ? <span className="badge">{placements.length} placement(s)</span> : null}
           </div>
@@ -478,7 +518,7 @@ function SetupScreen({ setupNames, setSetupNames, onSubmit, onAddPlayer, onRemov
       <div className="setup-copy">
         <p className="section-label">Nouvelle partie</p>
         <h2>Nombre de joueurs, noms, puis démarrage immédiat</h2>
-        <p className="muted">La v3 reste centrée sur l’essentiel : créer la partie et jouer avec une vraie interface souris.</p>
+        <p className="muted">V4 préfinale : partie complète avec toutes les règles du Scrabble. Tous les mots sont acceptés (dictionnaire V5).</p>
       </div>
 
       <div className="setup-grid">
@@ -512,6 +552,61 @@ function SetupScreen({ setupNames, setSetupNames, onSubmit, onAddPlayer, onRemov
         </button>
       </div>
     </form>
+  );
+}
+
+function TurnTransitionScreen({ playerName, onReveal }) {
+  return (
+    <div className="turn-overlay">
+      <div className="turn-card brutal-card">
+        <p className="section-label">Changement de joueur</p>
+        <h2>C'est au tour de {playerName}</h2>
+        <p className="muted">Passe l'appareil au joueur concerné, puis clique pour voir ton chevalet.</p>
+        <button type="button" className="primary-button" onClick={onReveal}>
+          Voir mon chevalet
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function GameOverScreen({ players, winner, history, onNewGame }) {
+  const sorted = [...players].sort((a, b) => b.score - a.score);
+  return (
+    <div className="gameover-container">
+      <div className="gameover-card brutal-card">
+        <p className="section-label">Partie terminée</p>
+        <h2>{winner ? `${winner} remporte la partie !` : 'Fin de la partie'}</h2>
+
+        <div className="gameover-rankings">
+          {sorted.map((player, index) => (
+            <div key={player.name} className={`gameover-rank ${index === 0 ? 'first' : ''}`}>
+              <span className="gameover-position">{index + 1}</span>
+              <span className="gameover-name">{player.name}</span>
+              <span className="gameover-score">{player.score} pts</span>
+            </div>
+          ))}
+        </div>
+
+        {history.length ? (
+          <div className="gameover-history">
+            <p className="section-label">Résumé de la partie</p>
+            <div className="history-list">
+              {history.map((entry, i) => (
+                <div key={i} className={`history-entry history-type-${entry.type.toLowerCase()}`}>
+                  <span className="history-entry-message">{entry.message}</span>
+                  {entry.points > 0 ? <span className="history-entry-points">+{entry.points}</span> : null}
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        <button type="button" className="primary-button" onClick={onNewGame}>
+          Nouvelle partie
+        </button>
+      </div>
+    </div>
   );
 }
 

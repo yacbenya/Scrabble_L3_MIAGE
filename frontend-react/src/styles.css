@@ -395,6 +395,163 @@ button {
   color: var(--ink);
 }
 
+/* V4 - Turn transition overlay */
+.turn-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 17, 17, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+
+.turn-card {
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  display: grid;
+  gap: 16px;
+  padding: 40px;
+}
+
+.turn-card h2 {
+  margin: 0;
+  font-size: 2rem;
+  text-transform: uppercase;
+}
+
+/* V4 - Game Over screen */
+.gameover-container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.gameover-card {
+  display: grid;
+  gap: 20px;
+  text-align: center;
+}
+
+.gameover-card h2 {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.6vw, 2.5rem);
+  text-transform: uppercase;
+}
+
+.gameover-rankings {
+  display: grid;
+  gap: 10px;
+}
+
+.gameover-rank {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 2px solid var(--line);
+  padding: 14px 18px;
+  background: white;
+}
+
+.gameover-rank.first {
+  background: var(--accent-2);
+  border-width: 3px;
+}
+
+.gameover-position {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--line);
+  background: var(--paper);
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+
+.gameover-rank.first .gameover-position {
+  background: var(--accent);
+  color: white;
+}
+
+.gameover-name {
+  flex: 1;
+  text-align: left;
+  font-weight: 800;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+}
+
+.gameover-score {
+  font-weight: 900;
+  font-size: 1.3rem;
+}
+
+.gameover-history {
+  text-align: left;
+}
+
+.gameover-card .primary-button {
+  justify-self: center;
+  padding: 16px 40px;
+  font-size: 1.1rem;
+}
+
+/* V4 - History list */
+.history-list {
+  border: 2px solid var(--line);
+  background: white;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.gameover-history .history-list {
+  max-height: 300px;
+}
+
+.history-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: 0.85rem;
+}
+
+.history-entry:last-child {
+  border-bottom: none;
+}
+
+.history-type-coup {
+  background: #f0fff5;
+}
+
+.history-type-passe {
+  background: #fff8f0;
+}
+
+.history-type-echange {
+  background: #f0f5ff;
+}
+
+.history-type-fin {
+  background: var(--accent-2);
+  font-weight: 800;
+}
+
+.history-entry-message {
+  flex: 1;
+}
+
+.history-entry-points {
+  font-weight: 900;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
 @media (max-width: 1100px) {
   .game-layout {
     grid-template-columns: 1fr;
