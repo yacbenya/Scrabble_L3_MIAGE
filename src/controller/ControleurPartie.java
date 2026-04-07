@@ -26,12 +26,19 @@ public final class ControleurPartie {
     }
 
     public Partie nouvellePartie(List<String> noms) {
+        if (noms == null || noms.size() < 2) {
+            throw new IllegalArgumentException("Au moins 2 joueurs requis.");
+        }
         this.partie = partieService.demarrer(noms);
         return partie;
     }
 
     public Partie getPartie() {
         return partie;
+    }
+
+    public boolean hasPartie() {
+        return partie != null && !partie.getJoueurs().isEmpty();
     }
 
     public void reinitialiser() {
@@ -76,6 +83,9 @@ public final class ControleurPartie {
     }
 
     public String echangerTuiles(List<String> idsTuiles) {
+        if (idsTuiles == null || idsTuiles.isEmpty()) {
+            throw new IllegalArgumentException("Aucune tuile à échanger.");
+        }
         return partieService.echanger(exigerPartie(), idsTuiles);
     }
 
@@ -97,6 +107,7 @@ public final class ControleurPartie {
             racine.put("lastPoints", 0);
             racine.put("lastWords", List.of());
             racine.put("canExchange", false);
+            racine.put("remainingTilesEstimate", 0);
             return racine;
         }
 
@@ -109,6 +120,7 @@ public final class ControleurPartie {
         racine.put("lastPoints", partieCourante.getDerniersPoints());
         racine.put("lastWords", partieCourante.getDerniersMots());
         racine.put("canExchange", partieCourante.getSac().taille() >= 7 && !partieCourante.estTerminee());
+        racine.put("remainingTilesEstimate", partieCourante.getSac().taille());
         racine.put("players", serialiserJoueurs(partieCourante));
         racine.put("rack", serialiserChevalet(partieCourante.getJoueurCourant()));
         racine.put("board", serialiserPlateau(partieCourante));
