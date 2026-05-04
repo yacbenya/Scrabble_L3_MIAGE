@@ -1,8 +1,7 @@
 package model;
 
-import service.*;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class Partie {
@@ -10,116 +9,115 @@ public final class Partie {
     private final SacTuiles sac = new SacTuiles();
     private final List<Joueur> joueurs = new ArrayList<>();
 
-    private int indexJoueurCourant = 0;
-    private int passesConsecutifs = 0;
-    private boolean terminee = false;
+    private int indexJoueurCourant;
+    private int passesConsecutifs;
+    private boolean terminee;
+    private String dernierMessage = "";
+    private int derniersPoints;
+    private List<String> derniersMots = List.of();
+    private final List<HistoriqueEntry> historique = new ArrayList<>();
 
-    private final ValidateurCoup validateur;
-    private final ServiceScore scoreur;
-
-    public Partie(ServiceDictionnaire dictionnaire) {
-        this.validateur = new ValidateurCoup(dictionnaire);
-        this.scoreur = new ServiceScore();
+    public Plateau getPlateau() {
+        return plateau;
     }
 
-    public void demarrer(List<String> noms) {
+    public SacTuiles getSac() {
+        return sac;
+    }
+
+    public List<Joueur> getJoueurs() {
+        return Collections.unmodifiableList(joueurs);
+    }
+
+    public void reinitialiserJoueurs(List<Joueur> nouveauxJoueurs) {
         joueurs.clear();
-        for (String nom : noms) joueurs.add(new Joueur(nom));
-
-        if (joueurs.size() < 2 || joueurs.size() > 4) {
-            throw new IllegalArgumentException("Il faut entre 2 et 4 joueurs.");
-        }
-
-        for (Joueur joueur : joueurs) completerChevalet(joueur);
-
+        joueurs.addAll(nouveauxJoueurs);
         indexJoueurCourant = 0;
         passesConsecutifs = 0;
         terminee = false;
+        dernierMessage = "Partie initialisée.";
+        derniersPoints = 0;
+        derniersMots = List.of();
+        historique.clear();
     }
 
-    public Plateau getPlateau() { return plateau; }
-    public List<Joueur> getJoueurs() { return joueurs; }
-    public Joueur getJoueurCourant() { return joueurs.get(indexJoueurCourant); }
+    public Joueur getJoueurCourant() {
+        if (joueurs.isEmpty()) {
+            throw new IllegalStateException("La partie n'a pas de joueurs.");
+        }
+        return joueurs.get(indexJoueurCourant);
+    }
+
+    public int getIndexJoueurCourant() {
+        return indexJoueurCourant;
+    }
+
+    public void passerAuJoueurSuivant() {
+        if (!joueurs.isEmpty()) {
+            indexJoueurCourant = (indexJoueurCourant + 1) % joueurs.size();
+        }
+    }
 
     public boolean estPremierCoup() {
-        return plateau.getCase(7, 7).estVide();
+        return plateau.estVideCentre();
+    }
+
+    public int getPassesConsecutifs() {
+        return passesConsecutifs;
+    }
+
+    public void setPassesConsecutifs(int passesConsecutifs) {
+        this.passesConsecutifs = passesConsecutifs;
     }
 
     public boolean estTerminee() {
         return terminee;
     }
 
-    public ResultatTour jouerCoup(Coup coup) {
-        if (terminee) throw new IllegalStateException("La partie est terminee.");
-
-        ResultatValidation resultatValidation = validateur.valider(plateau, coup, estPremierCoup());
-        int points = scoreur.calculer(plateau, coup, resultatValidation.mots());
-
-        plateau.appliquerCoup(coup);
-
-        Joueur joueur = getJoueurCourant();
-        joueur.ajouterScore(points);
-        completerChevalet(joueur);
-
-        passesConsecutifs = 0;
-
-        boolean finParChevaletVide = sac.estVide() && joueur.getChevalet().taille() == 0;
-        if (finParChevaletVide) {
-            appliquerFinDePartieChevaletVide(joueur);
-            terminee = true;
-        }
-
-        List<String> mots = resultatValidation.mots().stream().map(InfoMot::texte).toList();
-        String message = finParChevaletVide ? "Fin: un joueur a vide son chevalet et le sac est vide." : "Coup valide.";
-
-        if (!terminee) passerAuJoueurSuivant();
-        return new ResultatTour(points, mots, message, terminee);
+    public void setTerminee(boolean terminee) {
+        this.terminee = terminee;
     }
 
-    public void passer() {
-        if (terminee) return;
-
-        passesConsecutifs++;
-
-        // Regle simple: si tout le monde passe 2 tours de suite, on arrete.
-        int seuil = joueurs.size() * 2;
-        if (passesConsecutifs >= seuil) {
-            appliquerFinDePartieParPasses();
-            terminee = true;
-            return;
-        }
-
-        passerAuJoueurSuivant();
+    public String getDernierMessage() {
+        return dernierMessage;
     }
 
-    private void passerAuJoueurSuivant() {
-        indexJoueurCourant = (indexJoueurCourant + 1) % joueurs.size();
+    public void setDernierMessage(String dernierMessage) {
+        this.dernierMessage = dernierMessage == null ? "" : dernierMessage;
     }
 
-    private void completerChevalet(Joueur joueur) {
-        while (joueur.getChevalet().taille() < 7 && !sac.estVide()) {
-            Tuile tuile = sac.piocher();
-            if (tuile == null) break;
-            joueur.getChevalet().ajouter(tuile);
-        }
+    public int getDerniersPoints() {
+        return derniersPoints;
     }
 
-    private void appliquerFinDePartieChevaletVide(Joueur gagnantPotentiel) {
-        int sommeRestante = 0;
-
-        for (Joueur j : joueurs) {
-            int reste = j.getChevalet().pointsRestants();
-            j.ajouterScore(-reste);
-            sommeRestante += reste;
-        }
-
-        gagnantPotentiel.ajouterScore(sommeRestante);
+    public void setDerniersPoints(int derniersPoints) {
+        this.derniersPoints = derniersPoints;
     }
 
-    private void appliquerFinDePartieParPasses() {
-        for (Joueur j : joueurs) {
-            int reste = j.getChevalet().pointsRestants();
-            j.ajouterScore(-reste);
+    public List<String> getDerniersMots() {
+        return derniersMots;
+    }
+
+    public void setDerniersMots(List<String> derniersMots) {
+        this.derniersMots = derniersMots == null ? List.of() : List.copyOf(derniersMots);
+    }
+
+    public List<HistoriqueEntry> getHistorique() {
+        return Collections.unmodifiableList(historique);
+    }
+
+    public void ajouterHistorique(HistoriqueEntry entry) {
+        historique.add(entry);
+    }
+
+    public String getNomGagnant() {
+        if (!terminee || joueurs.isEmpty()) return null;
+        Joueur gagnant = joueurs.getFirst();
+        for (int i = 1; i < joueurs.size(); i++) {
+            if (joueurs.get(i).getScore() > gagnant.getScore()) {
+                gagnant = joueurs.get(i);
+            }
         }
+        return gagnant.getNom();
     }
 }

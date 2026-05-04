@@ -1,0 +1,7 @@
+# Windows / WSL Zone Identifier files
+*.Zone.identifier
+*Zone.Identifier
+*.zone.identifier
+
+# Alternative glob plus large (sécurisé)
+**/*Zone.Identifier*

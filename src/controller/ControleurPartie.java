@@ -2,6 +2,7 @@ package controller;
 
 import model.Coup;
 import model.Direction;
+import model.HistoriqueEntry;
 import model.Joueur;
 import model.Partie;
 import model.Pose;
@@ -26,19 +27,12 @@ public final class ControleurPartie {
     }
 
     public Partie nouvellePartie(List<String> noms) {
-        if (noms == null || noms.size() < 2) {
-            throw new IllegalArgumentException("Au moins 2 joueurs requis.");
-        }
         this.partie = partieService.demarrer(noms);
         return partie;
     }
 
     public Partie getPartie() {
         return partie;
-    }
-
-    public boolean hasPartie() {
-        return partie != null && !partie.getJoueurs().isEmpty();
     }
 
     public void reinitialiser() {
@@ -83,9 +77,6 @@ public final class ControleurPartie {
     }
 
     public String echangerTuiles(List<String> idsTuiles) {
-        if (idsTuiles == null || idsTuiles.isEmpty()) {
-            throw new IllegalArgumentException("Aucune tuile à échanger.");
-        }
         return partieService.echanger(exigerPartie(), idsTuiles);
     }
 
@@ -107,7 +98,8 @@ public final class ControleurPartie {
             racine.put("lastPoints", 0);
             racine.put("lastWords", List.of());
             racine.put("canExchange", false);
-            racine.put("remainingTilesEstimate", 0);
+            racine.put("winner", null);
+            racine.put("history", List.of());
             return racine;
         }
 
@@ -120,10 +112,11 @@ public final class ControleurPartie {
         racine.put("lastPoints", partieCourante.getDerniersPoints());
         racine.put("lastWords", partieCourante.getDerniersMots());
         racine.put("canExchange", partieCourante.getSac().taille() >= 7 && !partieCourante.estTerminee());
-        racine.put("remainingTilesEstimate", partieCourante.getSac().taille());
+        racine.put("winner", partieCourante.getNomGagnant());
         racine.put("players", serialiserJoueurs(partieCourante));
         racine.put("rack", serialiserChevalet(partieCourante.getJoueurCourant()));
         racine.put("board", serialiserPlateau(partieCourante));
+        racine.put("history", serialiserHistorique(partieCourante));
         return racine;
     }
 
@@ -164,6 +157,20 @@ public final class ControleurPartie {
     private static List<Object> boardVide() {
         Partie temporaire = new Partie();
         return serialiserPlateau(temporaire);
+    }
+
+    private static List<Object> serialiserHistorique(Partie partie) {
+        List<Object> liste = new ArrayList<>();
+        for (HistoriqueEntry entry : partie.getHistorique()) {
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("type", entry.type());
+            item.put("joueur", entry.joueur());
+            item.put("points", entry.points());
+            item.put("mots", entry.mots());
+            item.put("message", entry.message());
+            liste.add(item);
+        }
+        return liste;
     }
 
     private static List<Object> serialiserPlateau(Partie partie) {
