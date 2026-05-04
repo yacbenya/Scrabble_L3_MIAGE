@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2026-02-23" view-index="0" gantt-divider-location="444" resource-divider-location="536" version="3.3.3316" locale="fr_FR">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2026-03-02" view-index="0" gantt-divider-location="429" resource-divider-location="536" version="3.3.3316" locale="fr_FR">
     <description/>
     <view zooming-state="default:7" id="gantt-chart">
-        <field id="tpd3" name="Nom" width="261" order="0"/>
-        <field id="tpd4" name="Date de début" width="81" order="1"/>
-        <field id="tpd5" name="Date de fin" width="86" order="2"/>
+        <field id="tpd3" name="Nom" width="252" order="0"/>
+        <field id="tpd4" name="Date de début" width="78" order="1"/>
+        <field id="tpd5" name="Date de fin" width="83" order="2"/>
         <field id="tpd15" name="Notes" width="20" order="3"/>
         <option id="filter.completedTasks" value="false"/>
         <option id="filter.dueTodayTasks" value="false"/>
@@ -39,19 +39,19 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="3" uid="f5e39e87505f424bb80e5f94e066a4b1" name="étude et analyse ET Création dépôt" meeting="false" start="2026-01-21" duration="1" complete="0" expand="true">
+        <task id="3" uid="f5e39e87505f424bb80e5f94e066a4b1" name="étude et analyse ET Création dépôt" meeting="false" start="2026-01-21" duration="1" complete="100" expand="true">
             <depend id="66" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="0" uid="3ee225adf9f84325a34deec9c7be9e5d" name="Création diagramme de Gantt" meeting="false" start="2026-02-04" duration="1" complete="0" expand="true"/>
-        <task id="2" uid="8079073d405445fda83a212fa701ee11" name="Diagramme de classe version 0" meeting="false" start="2026-02-04" duration="1" complete="0" expand="true"/>
-        <task id="6" uid="620382160a3848379c23b98078ab88ad" name="CADRAGE" meeting="false" start="2026-02-05" duration="3" complete="0" expand="true">
+        <task id="0" uid="3ee225adf9f84325a34deec9c7be9e5d" name="Création diagramme de Gantt" meeting="false" start="2026-02-04" duration="1" complete="100" expand="true"/>
+        <task id="2" uid="8079073d405445fda83a212fa701ee11" name="Diagramme de classe version 0" meeting="false" start="2026-02-04" duration="1" complete="100" expand="true"/>
+        <task id="6" uid="620382160a3848379c23b98078ab88ad" name="CADRAGE" meeting="false" start="2026-02-05" duration="3" complete="100" expand="true">
             <depend id="11" type="2" difference="0" hardness="Rubber"/>
-            <task id="7" uid="a38651e8acdb4863bbd31c43be2258ff" name="Document spécification" meeting="false" start="2026-02-05" duration="1" complete="0" expand="true"/>
-            <task id="8" uid="f6c8408844d049f8856614f4a50d9af4" name="Diagramme use case + activité" meeting="false" start="2026-02-06" duration="1" complete="0" expand="true"/>
-            <task id="9" uid="643465508485415890765054b4beb488" name="Diagramme de classe V1" meeting="false" start="2026-02-07" duration="1" complete="0" expand="true"/>
+            <task id="7" uid="a38651e8acdb4863bbd31c43be2258ff" name="Document spécification" meeting="false" start="2026-02-05" duration="1" complete="100" expand="true"/>
+            <task id="8" uid="f6c8408844d049f8856614f4a50d9af4" name="Diagramme use case + activité" meeting="false" start="2026-02-06" duration="1" complete="100" expand="true"/>
+            <task id="9" uid="643465508485415890765054b4beb488" name="Diagramme de classe V1" meeting="false" start="2026-02-07" duration="1" complete="100" expand="true"/>
         </task>
         <task id="10" uid="7d36a35c2b0e4eac87320a77e89ab888" name="Maquette attendue" meeting="false" start="2026-02-07" duration="1" complete="0" expand="true"/>
-        <task id="11" uid="947b3ed5e6974ff48c8e277865f766ea" name="PROGRAMMATION" meeting="false" start="2026-02-08" duration="89" complete="83" expand="true">
+        <task id="11" uid="947b3ed5e6974ff48c8e277865f766ea" name="PROGRAMMATION" meeting="false" start="2026-02-08" duration="89" complete="97" expand="true">
             <depend id="13" type="2" difference="0" hardness="Strong"/>
             <task id="44" uid="5c02c221ff5e43fb9f26c538f18bcd06" name="Implémentation  des classes MODELE" meeting="false" start="2026-02-08" duration="32" complete="100" expand="false">
                 <task id="22" uid="7c459afa560244c6bb65627138057826" name="implémetation classe CasePlateau" meeting="false" start="2026-02-08" duration="18" complete="100" expand="true"/>
@@ -79,33 +79,33 @@
                 <task id="43" uid="8b2c9a6277894b58b6ecd8d021641b66" name="implémentation de la classe controleur" meeting="false" start="2026-03-12" duration="27" complete="100" expand="true"/>
             </task>
             <task id="47" uid="9dd70ffade4d4b1892e3e19199fda109" name="API HTTP + JSON" meeting="false" start="2026-03-01" duration="3" complete="100" expand="true"/>
-            <task id="17" uid="a2d70e25c29f4a15a52b6e0cb9beed9d" name="implémentation des classes VUE" meeting="false" start="2026-04-07" duration="13" complete="80" expand="true"/>
+            <task id="17" uid="a2d70e25c29f4a15a52b6e0cb9beed9d" name="implémentation des classes VUE" meeting="false" start="2026-04-07" duration="13" complete="100" expand="true"/>
             <task id="45" uid="423742057d7f4d38b8910c570c3bbff8" name="Refactor métier vers PartieService" meeting="false" start="2026-03-01" duration="3" complete="100" expand="true"/>
             <task id="48" uid="b907b833e4d843e6977d5e27d1ed013b" name="IDs de tuiles / chevalet / sac" meeting="false" start="2026-03-06" duration="3" complete="100" expand="true"/>
             <task id="56" uid="9853ddaa68424b28b0073ff75214419b" name="Échange de tuiles et fins de partie" meeting="false" start="2026-03-06" duration="3" complete="100" expand="true"/>
             <task id="57" uid="c955d355acc3494583243891188bc5ed" name="adaptation PartieService avec nouveau modèle" meeting="false" start="2026-03-03" duration="3" complete="100" expand="true"/>
             <task id="46" uid="0efa9ce8a138405cbf0960ca5e1263a8" name="Validation mots croisés" meeting="false" start="2026-03-03" duration="3" complete="100" expand="true"/>
             <task id="49" uid="6d344a7c0884480ab4a501aa619c6b0f" name="Export d'état pour React" meeting="false" start="2026-03-12" duration="15" complete="100" expand="true"/>
-            <task id="52" uid="aefba2490d4f41ad8e0e9179a995c34e" name="Branchement API" meeting="false" start="2026-03-21" duration="18" complete="60" expand="true"/>
-            <task id="53" uid="a23253b874ad4e0e8b89fea0dd925739" name="Ajout et intégration dictionnaire" meeting="false" start="2026-04-07" duration="17" complete="5" expand="true"/>
+            <task id="52" uid="aefba2490d4f41ad8e0e9179a995c34e" name="Branchement API" meeting="false" start="2026-03-21" duration="18" complete="100" expand="true"/>
+            <task id="53" uid="a23253b874ad4e0e8b89fea0dd925739" name="Ajout et intégration dictionnaire" meeting="false" start="2026-04-07" duration="17" complete="100" expand="true"/>
             <task id="58" uid="66fa195203da492797711c9b3d6efc90" name="Ajouts fonctionalités supplémentaire" meeting="false" start="2026-04-23" duration="15" complete="0" expand="true"/>
-            <task id="59" uid="161e4eae49f0496db1251a3e455973cd" name="Modèle HistoriqueEntry" meeting="false" start="2026-04-07" duration="2" complete="0" expand="true">
+            <task id="59" uid="161e4eae49f0496db1251a3e455973cd" name="Modèle HistoriqueEntry" meeting="false" start="2026-04-07" duration="2" complete="100" expand="true">
                 <depend id="60" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="60" uid="43a0c663817846d1822834161dcf88f0" name="Enregistrement historique dans PartieService" meeting="false" start="2026-04-09" duration="3" complete="0" expand="true">
+            <task id="60" uid="43a0c663817846d1822834161dcf88f0" name="Enregistrement historique dans PartieService" meeting="false" start="2026-04-09" duration="3" complete="100" expand="true">
                 <depend id="61" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="61" uid="881abaddf67047d7939d147797758802" name="Logique gagnant et pénalités fin de partie" meeting="false" start="2026-04-12" duration="1" complete="0" expand="true"/>
-            <task id="62" uid="eeeeb8ef48724d24a92653006873a327" name="Sérialisation complète historique" meeting="false" start="2026-04-07" duration="7" complete="0" expand="true">
+            <task id="61" uid="881abaddf67047d7939d147797758802" name="Logique gagnant et pénalités fin de partie" meeting="false" start="2026-04-12" duration="1" complete="100" expand="true"/>
+            <task id="62" uid="eeeeb8ef48724d24a92653006873a327" name="Sérialisation complète historique" meeting="false" start="2026-04-07" duration="7" complete="100" expand="true">
                 <depend id="63" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="63" uid="f438174658b945878600a461b7ca223d" name="Tests intégration backend" meeting="false" start="2026-04-14" duration="7" complete="0" expand="true"/>
-            <task id="64" uid="55df66b352c74b0697ef6c00ed655334" name="Écran de transition entre joueurs" meeting="false" start="2026-04-07" duration="7" complete="0" expand="true">
+            <task id="63" uid="f438174658b945878600a461b7ca223d" name="Tests intégration backend" meeting="false" start="2026-04-14" duration="7" complete="100" expand="true"/>
+            <task id="64" uid="55df66b352c74b0697ef6c00ed655334" name="Écran de transition entre joueurs" meeting="false" start="2026-04-07" duration="7" complete="100" expand="true">
                 <depend id="65" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="65" uid="80d66ab644c9480ab93bf7be0a902e7f" name="Écran Game Over et classement" meeting="false" start="2026-04-14" duration="7" complete="0" expand="true"/>
-            <task id="66" uid="a55aae2213f84b818d0414252160aa54" name="Panel historique dans la sidebar" meeting="false" start="2026-02-08" duration="7" complete="0" expand="true"/>
-            <task id="54" uid="e94fd1c373fd4d7d940d1d947ccc0afe" name="finalisation vue/ ajustements" meeting="false" start="2026-04-07" duration="13" complete="30" expand="true"/>
+            <task id="65" uid="80d66ab644c9480ab93bf7be0a902e7f" name="Écran Game Over et classement" meeting="false" start="2026-04-14" duration="7" complete="100" expand="true"/>
+            <task id="66" uid="a55aae2213f84b818d0414252160aa54" name="Panel historique dans la sidebar" meeting="false" start="2026-02-08" duration="7" complete="100" expand="true"/>
+            <task id="54" uid="e94fd1c373fd4d7d940d1d947ccc0afe" name="finalisation vue/ ajustements" meeting="false" start="2026-04-07" duration="13" complete="100" expand="true"/>
             <task id="55" uid="dba64419d9b74b4c885f56ab898f28e1" name="Panneau scores / statut / actions" meeting="false" start="2026-03-26" duration="13" complete="100" expand="true"/>
             <task id="51" uid="e6194690618a4c7abdac933ff22505d4" name="Plateau interactif" meeting="false" start="2026-03-02" duration="3" complete="100" expand="true"/>
             <task id="50" uid="f91ba4fd733847e2bd800b98523336e7" name="Écran de lancement joueurs" meeting="false" start="2026-03-01" duration="2" complete="100" expand="true"/>
