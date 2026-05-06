@@ -7,12 +7,21 @@ import controller.ControleurPartie;
 import controller.PlacementCommande;
 import model.Direction;
 import model.ResultatTour;
+import service.ServiceDictionnaire;
+import service.ServiceDictionnaireFichier;
 import service.ServiceDictionnaireToujoursValide;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 public final class ScrabbleHttpServer {
@@ -20,18 +29,16 @@ public final class ScrabbleHttpServer {
     private final HttpServer server;
 
     public ScrabbleHttpServer(int port) throws IOException {
-        this.controleur = new ControleurPartie(new ServiceDictionnaireToujoursValide());
+        this.controleur = new ControleurPartie(chargerDictionnaire());
         this.server = HttpServer.create(new InetSocketAddress(port), 0);
-
-        server.createContext("/api/health", new JsonHandler(this::health));
-        server.createContext("/api/game/state", new JsonHandler(this::etat));
-        server.createContext("/api/game/start", new JsonHandler(this::demarrer));
-        server.createContext("/api/game/reset", new JsonHandler(this::reinitialiser));
-        server.createContext("/api/game/play", new JsonHandler(this::jouer));
-        server.createContext("/api/game/pass", new JsonHandler(this::passer));
-        server.createContext("/api/game/exchange", new JsonHandler(this::echanger));
-
-        server.setExecutor(Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()));
+        this.server.createContext("/api/health", new JsonHandler(this::health));
+        this.server.createContext("/api/game/state", new JsonHandler(this::etat));
+        this.server.createContext("/api/game/start", new JsonHandler(this::demarrer));
+        this.server.createContext("/api/game/reset", new JsonHandler(this::reinitialiser));
+        this.server.createContext("/api/game/play", new JsonHandler(this::jouer));
+        this.server.createContext("/api/game/pass", new JsonHandler(this::passer));
+        this.server.createContext("/api/game/exchange", new JsonHandler(this::echanger));
+        this.server.setExecutor(Executors.newCachedThreadPool());
     }
 
     public void start() {
@@ -42,130 +49,129 @@ public final class ScrabbleHttpServer {
         server.stop(0);
     }
 
+    private static ServiceDictionnaire chargerDictionnaire() {
+        Path chemin = Paths.get("dictionnaire", "mots.txt");
+        try {
+            ServiceDictionnaireFichier service = new ServiceDictionnaireFichier(chemin);
+            System.out.println("Dictionnaire chargé : " + service.taille() + " mots depuis " + chemin);
+            return service;
+        } catch (IOException e) {
+            System.out.println("Dictionnaire introuvable (" + chemin + ") : tous les mots seront acceptés.");
+            return new ServiceDictionnaireToujoursValide();
+        }
+    }
+
     private Response health(HttpExchange exchange, Object body) {
         return Response.ok(Map.of("status", "ok"));
     }
 
     private Response etat(HttpExchange exchange, Object body) {
-        ensureMethod(exchange, "GET");
+        if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+            return Response.error(405, "Méthode non autorisée.");
+        }
         return Response.ok(controleur.exporterEtat());
     }
 
     private Response demarrer(HttpExchange exchange, Object body) {
-        ensureMethod(exchange, "POST");
+        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            return Response.error(405, "Méthode non autorisée.");
+        }
         Map<String, Object> map = asObject(body);
         List<String> noms = asStringList(map.get("playerNames"));
         controleur.nouvellePartie(noms);
         return Response.ok(controleur.exporterEtat());
     }
 
+
     private Response reinitialiser(HttpExchange exchange, Object body) {
-        ensureMethod(exchange, "POST");
+        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            return Response.error(405, "Méthode non autorisée.");
+        }
         controleur.reinitialiser();
         return Response.ok(controleur.exporterEtat());
     }
 
     private Response jouer(HttpExchange exchange, Object body) {
-        ensureMethod(exchange, "POST");
-
+        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            return Response.error(405, "Méthode non autorisée.");
+        }
         Map<String, Object> map = asObject(body);
-
-        Direction direction = parseDirection(map.get("direction"));
+        Direction direction = null;
+        Object directionObject = map.get("direction");
+        if (directionObject instanceof String texte && !texte.isBlank()) {
+            direction = Direction.valueOf(texte.trim().toUpperCase());
+        }
 
         List<PlacementCommande> placements = new ArrayList<>();
         for (Object item : asList(map.get("placements"))) {
-            Map<String, Object> p = asObject(item);
-
-            String tileId = asString(p.get("tileId"));
-            int row = asInt(p.get("row"));
-            int col = asInt(p.get("col"));
-
-            Character joker = null;
-            Object jokerObj = p.get("jokerFace");
-            if (jokerObj instanceof String s && !s.isBlank()) {
-                joker = Character.toUpperCase(s.charAt(0));
+            Map<String, Object> placement = asObject(item);
+            String tileId = asString(placement.get("tileId"));
+            int ligne = asInt(placement.get("row"));
+            int colonne = asInt(placement.get("col"));
+            Character faceJoker = null;
+            Object jokerObject = placement.get("jokerFace");
+            if (jokerObject instanceof String joker && !joker.isBlank()) {
+                faceJoker = Character.toUpperCase(joker.charAt(0));
             }
-
-            placements.add(new PlacementCommande(tileId, row, col, joker));
+            placements.add(new PlacementCommande(tileId, ligne, colonne, faceJoker));
         }
 
         ResultatTour resultat = controleur.jouerCoup(placements, direction);
-
-        Map<String, Object> response = new LinkedHashMap<>(controleur.exporterEtat());
-        response.put("action", Map.of(
+        Map<String, Object> reponse = new LinkedHashMap<>(controleur.exporterEtat());
+        reponse.put("action", Map.of(
                 "points", resultat.points(),
                 "words", resultat.mots(),
                 "message", resultat.message(),
                 "finished", resultat.partieTerminee()
         ));
-
-        return Response.ok(response);
+        return Response.ok(reponse);
     }
 
     private Response passer(HttpExchange exchange, Object body) {
-        ensureMethod(exchange, "POST");
-
+        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            return Response.error(405, "Méthode non autorisée.");
+        }
         String message = controleur.passerTour();
-
-        Map<String, Object> response = new LinkedHashMap<>(controleur.exporterEtat());
-        response.put("action", Map.of("message", message));
-
-        return Response.ok(response);
+        Map<String, Object> reponse = new LinkedHashMap<>(controleur.exporterEtat());
+        reponse.put("action", Map.of("message", message));
+        return Response.ok(reponse);
     }
 
     private Response echanger(HttpExchange exchange, Object body) {
-        ensureMethod(exchange, "POST");
-
+        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            return Response.error(405, "Méthode non autorisée.");
+        }
         Map<String, Object> map = asObject(body);
         String message = controleur.echangerTuiles(asStringList(map.get("tileIds")));
-
-        Map<String, Object> response = new LinkedHashMap<>(controleur.exporterEtat());
-        response.put("action", Map.of("message", message));
-
-        return Response.ok(response);
-    }
-
-    private static void ensureMethod(HttpExchange exchange, String method) {
-        if (!method.equalsIgnoreCase(exchange.getRequestMethod())) {
-            throw new IllegalArgumentException("Méthode non autorisée");
-        }
-    }
-
-    private static Direction parseDirection(Object value) {
-        if (value instanceof String s && !s.isBlank()) {
-            try {
-                return Direction.valueOf(s.trim().toUpperCase());
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Direction invalide");
-            }
-        }
-        return null;
+        Map<String, Object> reponse = new LinkedHashMap<>(controleur.exporterEtat());
+        reponse.put("action", Map.of("message", message));
+        return Response.ok(reponse);
     }
 
     private static Map<String, Object> asObject(Object body) {
         if (body instanceof Map<?, ?> map) {
-            Map<String, Object> res = new LinkedHashMap<>();
-            for (Map.Entry<?, ?> e : map.entrySet()) {
-                res.put(String.valueOf(e.getKey()), e.getValue());
+            Map<String, Object> resultat = new LinkedHashMap<>();
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                resultat.put(String.valueOf(entry.getKey()), entry.getValue());
             }
-            return res;
+            return resultat;
         }
         return Map.of();
     }
 
     private static List<Object> asList(Object value) {
-        if (value instanceof List<?> l) {
-            return new ArrayList<>(l);
+        if (value instanceof List<?> liste) {
+            return new ArrayList<>(liste);
         }
         return List.of();
     }
 
     private static List<String> asStringList(Object value) {
-        List<String> res = new ArrayList<>();
-        for (Object o : asList(value)) {
-            res.add(asString(o));
+        List<String> resultat = new ArrayList<>();
+        for (Object item : asList(value)) {
+            resultat.add(asString(item));
         }
-        return res;
+        return resultat;
     }
 
     private static String asString(Object value) {
@@ -173,12 +179,8 @@ public final class ScrabbleHttpServer {
     }
 
     private static int asInt(Object value) {
-        if (value instanceof Number n) return n.intValue();
-        try {
-            return Integer.parseInt(String.valueOf(value));
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Entier invalide");
-        }
+        if (value instanceof Number number) return number.intValue();
+        return Integer.parseInt(String.valueOf(value));
     }
 
     private interface Route {
@@ -194,8 +196,7 @@ public final class ScrabbleHttpServer {
 
         @Override
         public void handle(HttpExchange exchange) throws IOException {
-            addHeaders(exchange);
-
+            addCors(exchange);
             if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
                 exchange.sendResponseHeaders(204, -1);
                 exchange.close();
@@ -204,41 +205,38 @@ public final class ScrabbleHttpServer {
 
             try {
                 Object body = null;
-
                 if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
-                    String text = read(exchange.getRequestBody());
-                    if (!text.isBlank()) {
-                        body = Json.parse(text);
+                    String texte = readBody(exchange.getRequestBody());
+                    if (!texte.isBlank()) {
+                        body = Json.parse(texte);
                     }
                 }
 
                 Response response = route.handle(exchange, body);
-                write(exchange, response.statusCode, response.body);
-
+                writeJson(exchange, response.statusCode, response.body);
             } catch (IllegalArgumentException | IllegalStateException e) {
-                write(exchange, 400, Map.of("error", e.getMessage()));
+                writeJson(exchange, 400, Map.of("error", e.getMessage()));
             } catch (Exception e) {
-                write(exchange, 500, Map.of("error", Optional.ofNullable(e.getMessage()).orElse("Erreur interne")));
+                writeJson(exchange, 500, Map.of("error", e.getMessage() == null ? "Erreur interne." : e.getMessage()));
             }
         }
 
-        private static String read(InputStream is) throws IOException {
-            return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        private static String readBody(InputStream inputStream) throws IOException {
+            return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         }
 
-        private static void addHeaders(HttpExchange exchange) {
-            var h = exchange.getResponseHeaders();
-            h.add("Access-Control-Allow-Origin", "*");
-            h.add("Access-Control-Allow-Headers", "Content-Type");
-            h.add("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-            h.add("Content-Type", "application/json; charset=utf-8");
+        private static void addCors(HttpExchange exchange) {
+            exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+            exchange.getResponseHeaders().add("Content-Type", "application/json; charset=utf-8");
         }
 
-        private static void write(HttpExchange exchange, int code, Object body) throws IOException {
-            byte[] data = Json.stringify(body).getBytes(StandardCharsets.UTF_8);
-            exchange.sendResponseHeaders(code, data.length);
+        private static void writeJson(HttpExchange exchange, int statusCode, Object body) throws IOException {
+            byte[] payload = Json.stringify(body).getBytes(StandardCharsets.UTF_8);
+            exchange.sendResponseHeaders(statusCode, payload.length);
             try (OutputStream os = exchange.getResponseBody()) {
-                os.write(data);
+                os.write(payload);
             }
         }
     }
@@ -248,8 +246,8 @@ public final class ScrabbleHttpServer {
             return new Response(200, body);
         }
 
-        static Response error(int code, String message) {
-            return new Response(code, Map.of("error", message));
+        static Response error(int statusCode, String message) {
+            return new Response(statusCode, Map.of("error", message));
         }
     }
 }
