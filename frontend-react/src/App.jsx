@@ -274,13 +274,13 @@ function App() {
     <div className="page-shell">
       <header className="top-banner">
         <div>
-          <p className="eyebrow">Scrabble v4</p>
-          <h1>Partie jouable, toutes les règles appliquées</h1>
+          <p className="eyebrow">Scrabble</p>
+          <h1>Partie multijoueur</h1>
         </div>
         <div className="top-badges">
-          <span className="badge">Sac {gameState?.bagCount ?? 0}</span>
-          <span className="badge">Passes {gameState?.consecutivePasses ?? 0}</span>
-          <span className="badge">{gameState?.finished ? 'Partie terminée' : 'Partie active'}</span>
+          <span className="badge">Sac : {gameState?.bagCount ?? 0}</span>
+          <span className="badge">Passes : {gameState?.consecutivePasses ?? 0}</span>
+          <span className="badge">{gameState?.finished ? 'Partie terminée' : 'Partie en cours'}</span>
         </div>
       </header>
 
@@ -466,7 +466,7 @@ function App() {
           <div className="rack-header">
             <div>
               <p className="section-label">Chevalet</p>
-              <h3>Clic ou drag &amp; drop</h3>
+              <h3>Clic ou glisser-déposer</h3>
             </div>
             {placements.length ? <span className="badge">{placements.length} placement(s)</span> : null}
           </div>
@@ -517,8 +517,8 @@ function SetupScreen({ setupNames, setSetupNames, onSubmit, onAddPlayer, onRemov
     <form className="setup-card brutal-card" onSubmit={onSubmit}>
       <div className="setup-copy">
         <p className="section-label">Nouvelle partie</p>
-        <h2>Nombre de joueurs, noms, puis démarrage immédiat</h2>
-        <p className="muted">V4 préfinale : partie complète avec toutes les règles du Scrabble. Tous les mots sont acceptés (dictionnaire V5).</p>
+        <h2>Choisis les joueurs et démarre la partie</h2>
+        <p className="muted">Entre 2 et 4 joueurs. Les règles du Scrabble s'appliquent et la validité des mots est vérifiée par le dictionnaire.</p>
       </div>
 
       <div className="setup-grid">
