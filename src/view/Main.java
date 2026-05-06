@@ -9,6 +9,6 @@ public final class Main {
         int port = 8080;
         ScrabbleHttpServer server = new ScrabbleHttpServer(port);
         server.start();
-        System.out.println("Backend Scrabble v3 lancé sur http://localhost:" + port);
+        System.out.println("Backend Scrabble lancé sur http://localhost:" + port);
     }
 }
