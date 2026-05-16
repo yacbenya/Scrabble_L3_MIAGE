@@ -99,6 +99,17 @@ function App() {
     );
   }, [rack, placements]);
 
+  const detectedDirection = useMemo(() => {
+    if (placements.length < 2) return null;
+    const allSameRow = placements.every((p) => p.row === placements[0].row);
+    if (allSameRow) return 'HORIZONTALE';
+    const allSameCol = placements.every((p) => p.col === placements[0].col);
+    if (allSameCol) return 'VERTICALE';
+    return null;
+  }, [placements]);
+
+  const effectiveDirection = detectedDirection || direction;
+
   const displayedBoard = useMemo(() => {
     if (!gameState?.board) return [];
 
@@ -189,7 +200,7 @@ function App() {
     try {
       setError('');
       const state = await playMove({
-        direction,
+        direction: effectiveDirection,
         placements: placements.map((placement) => ({
           tileId: placement.tileId,
           row: placement.row,
@@ -317,7 +328,8 @@ function App() {
               <p className="section-label">Tour en cours</p>
               <h2>{gameState.currentPlayerName}</h2>
               <p className="muted">
-                Direction : {direction === 'HORIZONTALE' ? 'Horizontale' : 'Verticale'}
+                Direction : {effectiveDirection === 'HORIZONTALE' ? 'Horizontale' : 'Verticale'}
+                {detectedDirection ? ' (auto)' : ''}
               </p>
             </section>
 
@@ -366,22 +378,24 @@ function App() {
             ) : null}
 
             <section className="action-stack">
-              <div className="direction-switch">
-                <button
-                  type="button"
-                  className={direction === 'HORIZONTALE' ? 'active' : ''}
-                  onClick={() => setDirection('HORIZONTALE')}
-                >
-                  Horizontal
-                </button>
-                <button
-                  type="button"
-                  className={direction === 'VERTICALE' ? 'active' : ''}
-                  onClick={() => setDirection('VERTICALE')}
-                >
-                  Vertical
-                </button>
-              </div>
+              {detectedDirection === null ? (
+                <div className="direction-switch">
+                  <button
+                    type="button"
+                    className={direction === 'HORIZONTALE' ? 'active' : ''}
+                    onClick={() => setDirection('HORIZONTALE')}
+                  >
+                    Horizontal
+                  </button>
+                  <button
+                    type="button"
+                    className={direction === 'VERTICALE' ? 'active' : ''}
+                    onClick={() => setDirection('VERTICALE')}
+                  >
+                    Vertical
+                  </button>
+                </div>
+              ) : null}
 
               <button
                 className="primary-button"
