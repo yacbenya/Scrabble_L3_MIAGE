@@ -52,6 +52,12 @@ public final class Partie {
         return indexJoueurCourant;
     }
 
+    public void setIndexJoueurCourant(int index) {
+        if (!joueurs.isEmpty()) {
+            this.indexJoueurCourant = ((index % joueurs.size()) + joueurs.size()) % joueurs.size();
+        }
+    }
+
     public void passerAuJoueurSuivant() {
         if (!joueurs.isEmpty()) {
             indexJoueurCourant = (indexJoueurCourant + 1) % joueurs.size();
