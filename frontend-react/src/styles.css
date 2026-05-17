@@ -118,6 +118,24 @@ button:disabled {
   font-size: 0.74rem;
 }
 
+.badge-button {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 0.74rem;
+}
+
+.badge-button:hover:not(:disabled) {
+  background: var(--accent-soft);
+}
+
+.badge-button:disabled {
+  opacity: 0.45;
+}
+
 .word-pill {
   border: 1px solid var(--line);
   background: var(--paper);

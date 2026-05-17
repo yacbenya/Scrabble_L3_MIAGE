@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { exchangeTiles, fetchState, passTurn, playMove, resetGame, startGame } from './api';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { exchangeTiles, fetchState, loadGame, passTurn, playMove, resetGame, saveGame, startGame } from './api';
 
 const PRIME_LABELS = {
   MOT_TRIPLE: 'MT',
@@ -23,6 +23,7 @@ function App() {
   const [exchangeMode, setExchangeMode] = useState(false);
   const [selectedExchangeIds, setSelectedExchangeIds] = useState([]);
   const [turnTransition, setTurnTransition] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     void loadState();
@@ -74,6 +75,44 @@ function App() {
       setSetupNames(fallbackNames.length >= 2 ? fallbackNames : EMPTY_SETUP);
     } catch (err) {
       setError(err?.message || 'Erreur lors de la réinitialisation de la partie');
+    }
+  }
+
+  async function handleSauvegarder() {
+    try {
+      setError('');
+      const data = await saveGame();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'partie.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err?.message || 'Erreur lors de la sauvegarde');
+    }
+  }
+
+  function handleChargerClick() {
+    fileInputRef.current?.click();
+  }
+
+  async function handleFichierChoisi(event) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    try {
+      setError('');
+      const texte = await file.text();
+      const state = await loadGame(JSON.parse(texte));
+      resetLocalTurnState();
+      setGameState(state);
+      syncSetupNamesFromState(state);
+    } catch (err) {
+      setError(err?.message || 'Erreur lors du chargement');
     }
   }
 
@@ -292,6 +331,15 @@ function App() {
           <span className="badge">Sac : {gameState?.bagCount ?? 0}</span>
           <span className="badge">Passes : {gameState?.consecutivePasses ?? 0}</span>
           <span className="badge">{gameState?.finished ? 'Partie terminée' : 'Partie en cours'}</span>
+          <button type="button" className="badge-button" onClick={handleSauvegarder} disabled={!gameState?.gameStarted}>Sauvegarder</button>
+          <button type="button" className="badge-button" onClick={handleChargerClick}>Charger</button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/json,.json"
+            onChange={handleFichierChoisi}
+            style={{ display: 'none' }}
+          />
         </div>
       </header>
 

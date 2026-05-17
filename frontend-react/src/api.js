@@ -54,3 +54,14 @@ export function exchangeTiles(tileIds) {
     body: JSON.stringify({ tileIds })
   });
 }
+
+export function saveGame() {
+  return request('/game/save');
+}
+
+export function loadGame(data) {
+  return request('/game/load', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
