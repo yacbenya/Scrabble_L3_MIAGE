@@ -22,6 +22,10 @@ public final class Joueur {
         score += points;
     }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     public Chevalet getChevalet() {
         return chevalet;
     }

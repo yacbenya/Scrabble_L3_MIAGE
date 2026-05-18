@@ -38,6 +38,8 @@ public final class ScrabbleHttpServer {
         this.server.createContext("/api/game/play", new JsonHandler(this::jouer));
         this.server.createContext("/api/game/pass", new JsonHandler(this::passer));
         this.server.createContext("/api/game/exchange", new JsonHandler(this::echanger));
+        this.server.createContext("/api/game/save", new JsonHandler(this::sauvegarder));
+        this.server.createContext("/api/game/load", new JsonHandler(this::charger));
         this.server.setExecutor(Executors.newCachedThreadPool());
     }
 
@@ -146,6 +148,21 @@ public final class ScrabbleHttpServer {
         Map<String, Object> reponse = new LinkedHashMap<>(controleur.exporterEtat());
         reponse.put("action", Map.of("message", message));
         return Response.ok(reponse);
+    }
+
+    private Response sauvegarder(HttpExchange exchange, Object body) {
+        if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+            return Response.error(405, "Méthode non autorisée.");
+        }
+        return Response.ok(controleur.sauvegarder());
+    }
+
+    private Response charger(HttpExchange exchange, Object body) {
+        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+            return Response.error(405, "Méthode non autorisée.");
+        }
+        controleur.charger(asObject(body));
+        return Response.ok(controleur.exporterEtat());
     }
 
     private static Map<String, Object> asObject(Object body) {
