@@ -82,4 +82,14 @@ public final class SacTuiles {
     public int taille() {
         return pile.size();
     }
+
+    public List<Tuile> getTuiles() {
+        return new ArrayList<>(pile);
+    }
+
+    public void remplacer(List<Tuile> tuiles) {
+        pile.clear();
+        if (tuiles == null) return;
+        for (Tuile tuile : tuiles) pile.addLast(tuile);
+    }
 }
