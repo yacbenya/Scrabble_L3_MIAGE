@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2026-04-06" view-index="0" gantt-divider-location="424" resource-divider-location="536" version="3.3.3316" locale="fr_FR">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2025-11-10" view-index="0" gantt-divider-location="664" resource-divider-location="536" version="3.3.3316" locale="fr_FR">
     <description/>
-    <view zooming-state="default:6" id="gantt-chart">
-        <field id="tpd3" name="Nom" width="243" order="0"/>
-        <field id="tpd4" name="Date de début" width="75" order="1"/>
-        <field id="tpd5" name="Date de fin" width="90" order="2"/>
+    <view zooming-state="default:7" id="gantt-chart">
+        <field id="tpd3" name="Nom" width="386" order="0"/>
+        <field id="tpd4" name="Date de début" width="119" order="1"/>
+        <field id="tpd5" name="Date de fin" width="143" order="2"/>
         <field id="tpd15" name="Notes" width="20" order="3"/>
         <option id="filter.completedTasks" value="false"/>
         <option id="filter.dueTodayTasks" value="false"/>
         <option id="filter.overdueTasks" value="false"/>
         <option id="filter.inProgressTodayTasks" value="false"/>
-        <option id="color.recent"><![CDATA[#ff0000]]></option>
+        <option id="color.recent"><![CDATA[#660033 #660066 #999900 #009999 #ccffcc #ff0000]]></option>
     </view>
     <view id="resource-table">
         <field id="0" name="Nom" width="415" order="0"/>
@@ -39,19 +39,17 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="3" uid="f5e39e87505f424bb80e5f94e066a4b1" name="étude et analyse ET Création dépôt" meeting="false" start="2026-01-21" duration="1" complete="100" expand="true">
-            <depend id="66" type="2" difference="0" hardness="Strong"/>
-        </task>
+        <task id="3" uid="f5e39e87505f424bb80e5f94e066a4b1" name="étude et analyse ET Création dépôt" meeting="false" start="2026-01-21" duration="1" complete="100" expand="true"/>
         <task id="0" uid="3ee225adf9f84325a34deec9c7be9e5d" name="Création diagramme de Gantt" meeting="false" start="2026-02-04" duration="1" complete="100" expand="true"/>
         <task id="2" uid="8079073d405445fda83a212fa701ee11" name="Diagramme de classe version 0" meeting="false" start="2026-02-04" duration="1" complete="100" expand="true"/>
-        <task id="6" uid="620382160a3848379c23b98078ab88ad" name="CADRAGE" meeting="false" start="2026-02-05" duration="3" complete="100" expand="true">
+        <task id="6" uid="620382160a3848379c23b98078ab88ad" name="CADRAGE" meeting="false" start="2026-02-05" duration="3" complete="100" expand="false">
             <task id="7" uid="a38651e8acdb4863bbd31c43be2258ff" name="Document spécification" meeting="false" start="2026-02-05" duration="1" complete="100" expand="true"/>
             <task id="8" uid="f6c8408844d049f8856614f4a50d9af4" name="Diagramme use case + activité" meeting="false" start="2026-02-06" duration="1" complete="100" expand="true"/>
             <task id="9" uid="643465508485415890765054b4beb488" name="Diagramme de classe V1" meeting="false" start="2026-02-07" duration="1" complete="100" expand="true"/>
         </task>
         <task id="10" uid="7d36a35c2b0e4eac87320a77e89ab888" name="Maquette attendue" meeting="false" start="2026-02-07" duration="1" complete="0" expand="true"/>
-        <task id="11" uid="947b3ed5e6974ff48c8e277865f766ea" name="PROGRAMMATION" meeting="false" start="2026-01-22" duration="112" complete="98" expand="true">
-            <task id="44" uid="5c02c221ff5e43fb9f26c538f18bcd06" name="Implémentation  des classes MODELE" meeting="false" start="2026-02-08" duration="32" complete="100" expand="false">
+        <task id="11" uid="947b3ed5e6974ff48c8e277865f766ea" name="PROGRAMMATION" color="#009999" meeting="false" start="2026-02-08" duration="98" complete="100" expand="true">
+            <task id="44" uid="5c02c221ff5e43fb9f26c538f18bcd06" name="Implémentation  des classes MODELE" meeting="false" start="2026-02-08" duration="32" complete="100" expand="true">
                 <task id="22" uid="7c459afa560244c6bb65627138057826" name="implémetation classe CasePlateau" meeting="false" start="2026-02-08" duration="18" complete="100" expand="true"/>
                 <task id="23" uid="1a7df43ea7774a129706aea955e9e950" name="implémentation classe Chevalet" meeting="false" start="2026-02-08" duration="18" complete="100" expand="true"/>
                 <task id="24" uid="61d2808c676e48b1b516d2155bff8e51" name="implémentation classe Coup" meeting="false" start="2026-02-08" duration="18" complete="100" expand="true"/>
@@ -61,7 +59,7 @@
                 <task id="31" uid="9fdc6c6a328b4df3876b5b20ab20da7d" name="implémentation classe Partie" meeting="false" start="2026-02-08" duration="18" complete="100" expand="true"/>
                 <task id="26" uid="a42894e20c4e4197b80e6b5e17e87d6d" name="implémentation classe Plateau" meeting="false" start="2026-02-08" duration="18" complete="100" expand="true"/>
                 <task id="32" uid="3afe80a818c24150b39dad160fb9411f" name="implémentation classe Pose" meeting="false" start="2026-02-08" duration="18" complete="100" expand="true"/>
-                <task id="35" uid="8f488004555c45c9a58b9a99c59898b3" name="implémentation classe position" meeting="false" start="2026-02-08" duration="18" complete="100" expand="true"/>
+                <task id="35" uid="8f488004555c45c9a58b9a99c59898b3" name="implémentation classe position" meeting="false" start="2026-02-25" duration="1" complete="100" expand="true"/>
                 <task id="33" uid="d7d4ae41442742c8a85a198c59dca2f3" name="implémentation classe Prime" meeting="false" start="2026-02-08" duration="18" complete="100" expand="true"/>
                 <task id="34" uid="b3edec95e200448783d9b2cc589f07c4" name="implémentation classe Resultat tour" meeting="false" start="2026-02-08" duration="18" complete="100" expand="true"/>
                 <task id="28" uid="3f41576153ac4adfb240c939458b4b44" name="implémentation classe SacTuile" meeting="false" start="2026-02-08" duration="18" complete="100" expand="true"/>
@@ -73,69 +71,83 @@
                 <task id="41" uid="0e83510781754738b2220eb920294965" name="implémentation classe resultatValidation" meeting="false" start="2026-02-25" duration="15" complete="100" expand="true"/>
                 <task id="42" uid="0d26b304baa647239fb4237fe1a3ec3d" name="implémentation classe ServiceDictionnaire" meeting="false" start="2026-02-25" duration="15" complete="100" expand="true"/>
             </task>
-            <task id="18" uid="5bf5a998fb774dad8ea2dd6c1651d548" name="implémentation des classes CONTROLEUR" meeting="false" start="2026-03-12" duration="27" complete="100" expand="false">
+            <task id="84" uid="9d7a305f99634a71ad4f5919638273eb" name="Backend" color="#660066" meeting="false" start="2026-03-01" duration="77" complete="100" expand="true">
+                <task id="47" uid="9dd70ffade4d4b1892e3e19199fda109" name="API HTTP + JSON" meeting="false" start="2026-03-01" duration="3" complete="100" expand="true"/>
+                <task id="45" uid="423742057d7f4d38b8910c570c3bbff8" name="Refactor métier vers PartieService" meeting="false" start="2026-03-01" duration="3" complete="100" expand="true"/>
+                <task id="57" uid="c955d355acc3494583243891188bc5ed" name="adaptation PartieService avec nouveau modèle" meeting="false" start="2026-03-03" duration="3" complete="100" expand="true"/>
+                <task id="46" uid="0efa9ce8a138405cbf0960ca5e1263a8" name="Validation mots croisés" meeting="false" start="2026-03-03" duration="3" complete="100" expand="true"/>
+                <task id="56" uid="9853ddaa68424b28b0073ff75214419b" name="Échange de tuiles et fins de partie" meeting="false" start="2026-03-06" duration="3" complete="100" expand="true"/>
+                <task id="48" uid="b907b833e4d843e6977d5e27d1ed013b" name="IDs de tuiles / chevalet / sac" meeting="false" start="2026-03-06" duration="3" complete="100" expand="true"/>
+                <task id="52" uid="aefba2490d4f41ad8e0e9179a995c34e" name="Branchement API" meeting="false" start="2026-03-21" duration="18" complete="100" expand="true"/>
+                <task id="59" uid="161e4eae49f0496db1251a3e455973cd" name="Modèle HistoriqueEntry" meeting="false" start="2026-04-07" duration="2" complete="100" expand="true">
+                    <depend id="60" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="60" uid="43a0c663817846d1822834161dcf88f0" name="Enregistrement historique dans PartieService" meeting="false" start="2026-04-09" duration="3" complete="100" expand="true">
+                    <depend id="61" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="61" uid="881abaddf67047d7939d147797758802" name="Logique gagnant et pénalités fin de partie" meeting="false" start="2026-04-12" duration="1" complete="100" expand="true"/>
+                <task id="62" uid="eeeeb8ef48724d24a92653006873a327" name="Sérialisation complète historique" meeting="false" start="2026-04-07" duration="7" complete="100" expand="true">
+                    <depend id="63" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="63" uid="f438174658b945878600a461b7ca223d" name="Tests intégration backend" meeting="false" start="2026-04-14" duration="7" complete="100" expand="true"/>
+                <task id="51" uid="e6194690618a4c7abdac933ff22505d4" name="Plateau interactif" meeting="false" start="2026-03-02" duration="3" complete="100" expand="true"/>
+                <task id="68" uid="207151c9a6fb42e093c4964ece2a4732" name="Implémentation de ServiceDictionnaireFichier" meeting="false" start="2026-04-13" duration="2" complete="100" expand="true">
+                    <notes><![CDATA[Nouvelle implémentation de ServiceDictionnaire qui charge un fichaier texte sur disque. Lecture via Files.readAllLines, normalisation par lignes (trim + Locale.ROOT.toUpperCase + NFD + suppression des marques + filtrage A-Z), stockage HashSet pour recherche en O(1). Méthode taille() exposée pour le log de démarrage.
+
+]]></notes>
+                </task>
+                <task id="76" uid="f20424dd8c134f178fe2bdcf916f509b" name="Auto-detection direction H/V (cache les boutons si 2+ tuiles alignees)" meeting="false" start="2026-05-11" duration="1" complete="100" expand="true"/>
+                <task id="77" uid="5ce583e10d3e4d77afb6f01f2390064e" name="Conception format JSON pour la sauvegarde de partie" meeting="false" start="2026-05-12" duration="1" complete="100" expand="true"/>
+                <task id="78" uid="9556255214e74d8c8494b2906db3ff5e" name="ControleurPartie.sauvegarder() + helpers JSON" meeting="false" start="2026-05-13" duration="2" complete="100" expand="true"/>
+                <task id="79" uid="7a00175595c0484680a8aa082ebc8ae2" name="ControleurPartie.charger(Map) + reconstruction Partie" meeting="false" start="2026-05-15" duration="2" complete="100" expand="true"/>
+            </task>
+            <task id="83" uid="4807fb6e363f4855b4061eee799367f3" name="Frontend" color="#999900" meeting="false" start="2026-03-12" duration="65" complete="100" expand="true">
+                <task id="49" uid="6d344a7c0884480ab4a501aa619c6b0f" name="Export d'état pour React" meeting="false" start="2026-03-12" duration="15" complete="100" expand="true"/>
+                <task id="55" uid="dba64419d9b74b4c885f56ab898f28e1" name="Panneau scores / statut / actions" meeting="false" start="2026-03-26" duration="13" complete="100" expand="true"/>
+                <task id="17" uid="a2d70e25c29f4a15a52b6e0cb9beed9d" name="implémentation des classes VUE" meeting="false" start="2026-04-07" duration="13" complete="100" expand="true"/>
+                <task id="64" uid="55df66b352c74b0697ef6c00ed655334" name="Écran de transition entre joueurs" meeting="false" start="2026-04-07" duration="7" complete="100" expand="true">
+                    <depend id="65" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="65" uid="80d66ab644c9480ab93bf7be0a902e7f" name="Écran Game Over et classement" meeting="false" start="2026-04-14" duration="7" complete="100" expand="true"/>
+                <task id="66" uid="a55aae2213f84b818d0414252160aa54" name="Panel historique dans la sidebar" meeting="false" start="2026-03-24" duration="7" complete="100" expand="true"/>
+                <task id="54" uid="e94fd1c373fd4d7d940d1d947ccc0afe" name="finalisation vue/ ajustements" meeting="false" start="2026-04-07" duration="13" complete="100" expand="true"/>
+                <task id="50" uid="f91ba4fd733847e2bd800b98523336e7" name="Écran de lancement joueurs" meeting="false" start="2026-04-01" duration="2" complete="100" expand="true"/>
+                <task id="69" uid="40d7892656494d5bbf349d03adc10cca" name="Refonte sobre du CSS" meeting="false" start="2026-04-14" duration="4" complete="100" expand="true">
+                    <notes><![CDATA[Suppression du style brutalist (couleurs vives, gros shadows, bordures 3px). Mise en place d'une palette neutre (variables CSS dans :root), bordures fines, ombres discrètes, primes du plateau adoucies, typographie système. Conservation des classes existantes (App.jsx) pour ne rien casser.]]></notes>
+                </task>
+                <task id="73" uid="038d2e0e27d2432ba28cf534088a0e85" name="Correction layout responsive (tient à 100 % zoom)" meeting="false" start="2026-04-28" duration="2" complete="100" expand="true">
+                    <notes><![CDATA[Refonte du layout principal : sidebar resserrée à 260px, plateau dimensionné via width: min(100%, calc(100vh - 290px)) + aspect-ratio: 1/1 pour rester carré et tenir dans la hauteur de fenêtre. Sidebar passe en max-height + overflow-y interne pour ne pas pousser la page. Vérifié sur 1366×768 et 1920×1000.
+]]></notes>
+                </task>
+                <task id="75" uid="413e4858e72c4c3885aa378810d7ad2d" name="Refonte CSS layout responsive : plateau toujours visible sans dezoom" meeting="false" start="2026-05-08" duration="2" complete="100" expand="true"/>
+                <task id="80" uid="d58580fba16c4a168997284925fbc5d5" name="boutons Sauvegarder / Charger + handlers + api.js" meeting="false" start="2026-05-15" duration="1" complete="100" expand="true"/>
+            </task>
+            <task id="18" uid="5bf5a998fb774dad8ea2dd6c1651d548" name="implémentation des classes CONTROLEUR" meeting="false" start="2026-03-12" duration="27" complete="100" expand="true">
                 <task id="43" uid="8b2c9a6277894b58b6ecd8d021641b66" name="implémentation de la classe controleur" meeting="false" start="2026-03-12" duration="27" complete="100" expand="true"/>
             </task>
-            <task id="47" uid="9dd70ffade4d4b1892e3e19199fda109" name="API HTTP + JSON" meeting="false" start="2026-03-01" duration="3" complete="100" expand="true"/>
-            <task id="17" uid="a2d70e25c29f4a15a52b6e0cb9beed9d" name="implémentation des classes VUE" meeting="false" start="2026-04-07" duration="13" complete="100" expand="true"/>
-            <task id="45" uid="423742057d7f4d38b8910c570c3bbff8" name="Refactor métier vers PartieService" meeting="false" start="2026-03-01" duration="3" complete="100" expand="true"/>
-            <task id="48" uid="b907b833e4d843e6977d5e27d1ed013b" name="IDs de tuiles / chevalet / sac" meeting="false" start="2026-03-06" duration="3" complete="100" expand="true"/>
-            <task id="56" uid="9853ddaa68424b28b0073ff75214419b" name="Échange de tuiles et fins de partie" meeting="false" start="2026-03-06" duration="3" complete="100" expand="true"/>
-            <task id="57" uid="c955d355acc3494583243891188bc5ed" name="adaptation PartieService avec nouveau modèle" meeting="false" start="2026-03-03" duration="3" complete="100" expand="true"/>
-            <task id="46" uid="0efa9ce8a138405cbf0960ca5e1263a8" name="Validation mots croisés" meeting="false" start="2026-03-03" duration="3" complete="100" expand="true"/>
-            <task id="49" uid="6d344a7c0884480ab4a501aa619c6b0f" name="Export d'état pour React" meeting="false" start="2026-03-12" duration="15" complete="100" expand="true"/>
-            <task id="52" uid="aefba2490d4f41ad8e0e9179a995c34e" name="Branchement API" meeting="false" start="2026-03-21" duration="18" complete="100" expand="true"/>
-            <task id="53" uid="a23253b874ad4e0e8b89fea0dd925739" name="Ajout et intégration dictionnaire" meeting="false" start="2026-04-07" duration="17" complete="100" expand="true"/>
-            <task id="58" uid="66fa195203da492797711c9b3d6efc90" name="Ajouts fonctionalités supplémentaire" meeting="false" start="2026-05-07" duration="7" complete="0" expand="true"/>
-            <task id="59" uid="161e4eae49f0496db1251a3e455973cd" name="Modèle HistoriqueEntry" meeting="false" start="2026-04-07" duration="2" complete="100" expand="true">
-                <depend id="60" type="2" difference="0" hardness="Strong"/>
-            </task>
-            <task id="60" uid="43a0c663817846d1822834161dcf88f0" name="Enregistrement historique dans PartieService" meeting="false" start="2026-04-09" duration="3" complete="100" expand="true">
-                <depend id="61" type="2" difference="0" hardness="Strong"/>
-            </task>
-            <task id="61" uid="881abaddf67047d7939d147797758802" name="Logique gagnant et pénalités fin de partie" meeting="false" start="2026-04-12" duration="1" complete="100" expand="true"/>
-            <task id="62" uid="eeeeb8ef48724d24a92653006873a327" name="Sérialisation complète historique" meeting="false" start="2026-04-07" duration="7" complete="100" expand="true">
-                <depend id="63" type="2" difference="0" hardness="Strong"/>
-            </task>
-            <task id="63" uid="f438174658b945878600a461b7ca223d" name="Tests intégration backend" meeting="false" start="2026-04-14" duration="7" complete="100" expand="true"/>
-            <task id="64" uid="55df66b352c74b0697ef6c00ed655334" name="Écran de transition entre joueurs" meeting="false" start="2026-04-07" duration="7" complete="100" expand="true">
-                <depend id="65" type="2" difference="0" hardness="Strong"/>
-            </task>
-            <task id="65" uid="80d66ab644c9480ab93bf7be0a902e7f" name="Écran Game Over et classement" meeting="false" start="2026-04-14" duration="7" complete="100" expand="true"/>
-            <task id="66" uid="a55aae2213f84b818d0414252160aa54" name="Panel historique dans la sidebar" meeting="false" start="2026-01-22" duration="7" complete="100" expand="true"/>
-            <task id="54" uid="e94fd1c373fd4d7d940d1d947ccc0afe" name="finalisation vue/ ajustements" meeting="false" start="2026-04-07" duration="13" complete="100" expand="true"/>
-            <task id="55" uid="dba64419d9b74b4c885f56ab898f28e1" name="Panneau scores / statut / actions" meeting="false" start="2026-03-26" duration="13" complete="100" expand="true"/>
-            <task id="51" uid="e6194690618a4c7abdac933ff22505d4" name="Plateau interactif" meeting="false" start="2026-03-02" duration="3" complete="100" expand="true"/>
-            <task id="50" uid="f91ba4fd733847e2bd800b98523336e7" name="Écran de lancement joueurs" meeting="false" start="2026-03-01" duration="2" complete="100" expand="true"/>
-            <task id="68" uid="207151c9a6fb42e093c4964ece2a4732" name="Implémentation de ServiceDictionnaireFichier" meeting="false" start="2026-04-13" duration="2" complete="100" expand="true">
-                <notes><![CDATA[Nouvelle implémentation de ServiceDictionnaire qui charge un fichaier texte sur disque. Lecture via Files.readAllLines, normalisation par lignes (trim + Locale.ROOT.toUpperCase + NFD + suppression des marques + filtrage A-Z), stockage HashSet pour recherche en O(1). Méthode taille() exposée pour le log de démarrage.
+            <task id="85" uid="53f5fa6b08eb46bdaa7d48e8285ef10f" name="Data" color="#660033" meeting="false" start="2026-04-07" duration="17" complete="100" expand="false">
+                <task id="53" uid="a23253b874ad4e0e8b89fea0dd925739" name="Ajout et intégration dictionnaire" meeting="false" start="2026-04-07" duration="17" complete="100" expand="true"/>
+                <task id="70" uid="65b48220294f462788406287ec3f36bf" name="Branchement du dictionnaire fichier dans ScrabbleHttpServer" meeting="false" start="2026-04-15" duration="1" complete="100" expand="true">
+                    <notes><![CDATA[Méthode chargerDictionnaire() ajoutée : tente d'instancier ServiceDictionnaireFichier sur dictionnaire/mots.txt. En cas d'IOException, fallback sur ServiceDictionnaireToujoursValide avec log d'avertissement. Le constructeur du serveur appelle cette méthode et passe le service au ControleurPartie.]]></notes>
+                </task>
+                <task id="72" uid="c7b781da881e4a70b6032d5871d629cf" name="Tests métier de validation avec dictionnaire réel" meeting="false" start="2026-04-22" duration="2" complete="100" expand="true"/>
+                <task id="71" uid="d83c5c3b8e2b4dce8a945372778e33c8" name="Scripts de téléchargement d'une liste complète (telecharger.bat / .sh)" meeting="false" start="2026-04-16" duration="1" complete="100" expand="true">
+                    <notes><![CDATA[Deux scripts shell qui téléchargent une liste publique de mots français depuis un dépôt GitHub (PowerShell Invoke-WebRequest sous Windows, curl sous Unix). Le fichier obtenu (mots_complet.txt) peut remplacer mots.txt si on veut une couverture compétitive.
 
 ]]></notes>
+                </task>
             </task>
-            <task id="70" uid="65b48220294f462788406287ec3f36bf" name="Branchement du dictionnaire fichier dans ScrabbleHttpServer" meeting="false" start="2026-04-15" duration="1" complete="100" expand="true">
-                <notes><![CDATA[Méthode chargerDictionnaire() ajoutée : tente d'instancier ServiceDictionnaireFichier sur dictionnaire/mots.txt. En cas d'IOException, fallback sur ServiceDictionnaireToujoursValide avec log d'avertissement. Le constructeur du serveur appelle cette méthode et passe le service au ControleurPartie.]]></notes>
-            </task>
-            <task id="69" uid="40d7892656494d5bbf349d03adc10cca" name="Refonte sobre du CSS" meeting="false" start="2026-04-14" duration="4" complete="100" expand="true">
-                <notes><![CDATA[Suppression du style brutalist (couleurs vives, gros shadows, bordures 3px). Mise en place d'une palette neutre (variables CSS dans :root), bordures fines, ombres discrètes, primes du plateau adoucies, typographie système. Conservation des classes existantes (App.jsx) pour ne rien casser.]]></notes>
-            </task>
-            <task id="71" uid="d83c5c3b8e2b4dce8a945372778e33c8" name="Scripts de téléchargement d'une liste complète (telecharger.bat / .sh)" meeting="false" start="2026-04-16" duration="1" complete="100" expand="true">
-                <notes><![CDATA[Deux scripts shell qui téléchargent une liste publique de mots français depuis un dépôt GitHub (PowerShell Invoke-WebRequest sous Windows, curl sous Unix). Le fichier obtenu (mots_complet.txt) peut remplacer mots.txt si on veut une couverture compétitive.
-
-]]></notes>
-            </task>
-            <task id="72" uid="c7b781da881e4a70b6032d5871d629cf" name="Tests métier de validation avec dictionnaire réel" meeting="false" start="2026-04-22" duration="2" complete="100" expand="true"/>
-            <task id="73" uid="038d2e0e27d2432ba28cf534088a0e85" name="Correction layout responsive (tient à 100 % zoom)" meeting="false" start="2026-04-28" duration="2" complete="100" expand="true">
-                <notes><![CDATA[Refonte du layout principal : sidebar resserrée à 260px, plateau dimensionné via width: min(100%, calc(100vh - 290px)) + aspect-ratio: 1/1 pour rester carré et tenir dans la hauteur de fenêtre. Sidebar passe en max-height + overflow-y interne pour ne pas pousser la page. Vérifié sur 1366×768 et 1920×1000.
-]]></notes>
-            </task>
+            <task id="58" uid="66fa195203da492797711c9b3d6efc90" name="Ajouts fonctionalités supplémentaire" meeting="false" start="2026-05-07" duration="7" complete="100" expand="true"/>
         </task>
+        <task id="67" uid="26cf618b21d24a60a24ea78ebee92849" name="Constitution base de mots français (dictionnaire/mots.txt)" meeting="false" start="2026-04-13" duration="2" complete="100" expand="true"/>
         <task id="74" uid="ce362cab9aea4767809d5f4634282063" name="Rédaction du dossier technique (parties métier et services)" meeting="false" start="2026-04-30" duration="1" complete="100" expand="true">
             <notes><![CDATA[Rédaction des sections du dossier technique relatives à la couche métier : règles du jeu, modèles Partie/Coup/Poase, ValidateurCoup (toutes les vérifications dans l'ordre), ServiceScore (multiplicateurs lettre/mot, bonus +50), HistoriqueEntry (rôle, fabriques, immutabilité, parcours jusqu'au frontend).]]></notes>
         </task>
-        <task id="67" uid="26cf618b21d24a60a24ea78ebee92849" name="Constitution base de mots français (dictionnaire/mots.txt)" meeting="false" start="2026-04-13" duration="2" complete="100" expand="true"/>
-        <task id="13" uid="92667d7b454442caaa36e03e5d6506ab" name="Finition" meeting="false" start="2026-05-07" duration="14" complete="5" expand="true">
-            <task id="14" uid="6eae4e3566b84f91906e15368e409c2a" name="Préparation oral et création support" meeting="false" start="2026-05-07" duration="14" complete="10" expand="true"/>
-            <task id="15" uid="aa9316b86bc74da1a58c0bde61e8fdf6" name="Dernier tests" meeting="false" start="2026-05-07" duration="14" complete="0" expand="true"/>
+        <task id="81" uid="8737709f42cb4951802ab7e267bcf060" name="Mise a jour diagramme de classes UML (ajouts save/load)" meeting="false" start="2026-05-18" duration="1" complete="100" expand="true"/>
+        <task id="13" uid="92667d7b454442caaa36e03e5d6506ab" name="Finition" meeting="false" start="2026-05-07" duration="14" complete="100" expand="false">
+            <task id="14" uid="6eae4e3566b84f91906e15368e409c2a" name="Préparation oral et création support" meeting="false" start="2026-05-07" duration="14" complete="100" expand="true"/>
+            <task id="15" uid="aa9316b86bc74da1a58c0bde61e8fdf6" name="Dernier tests" meeting="false" start="2026-05-07" duration="14" complete="100" expand="true"/>
+            <task id="82" uid="f81a22e64e3344ec92854010e86dda34" name="Redaction DOSSIER_TECHNIQUE" meeting="false" start="2026-05-17" duration="1" complete="100" expand="true"/>
         </task>
         <task id="4" uid="d9aeca9c4b42460db595aee74c338a2a" name="Dernière séance" color="#ff0000" meeting="true" start="2026-05-21" duration="0" complete="0" expand="true"/>
     </tasks>
@@ -167,6 +179,10 @@
         <allocation task-id="65" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="66" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="69" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="75" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="76" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="80" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="82" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="0" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="3" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="2" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
@@ -193,6 +209,8 @@
         <allocation task-id="67" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="72" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="74" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="81" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="82" resource-id="1" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="0" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="3" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="2" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
@@ -214,6 +232,10 @@
         <allocation task-id="63" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="70" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="71" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="77" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="79" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="78" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="82" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
     </allocations>
     <vacations/>
     <previous/>
